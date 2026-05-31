@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字花园 — 预览</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --bg-base: #1a1b2e;
+  --bg-surface: #232440;
+  --bg-elevated: #2b2d4a;
+  --bg-glass: rgba(26, 27, 46, 0.7);
+  --border: #353758;
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --text-primary: #e8e6f0;
+  --text-secondary: #b4b2c4;
+  --text-muted: #78778a;
+  --accent: #a78bfa;
+  --accent-soft: rgba(167, 139, 250, 0.12);
+  --accent-glow: rgba(167, 139, 250, 0.25);
+  --warm: #f59e0b;
+  --warm-soft: rgba(245, 158, 11, 0.12);
+  --warm-glow: rgba(245, 158, 11, 0.2);
+  --rose: #fb7185;
+  --rose-soft: rgba(251, 113, 133, 0.1);
+  --rose-glow: rgba(251, 113, 133, 0.2);
+  --teal: #2dd4bf;
+  --teal-soft: rgba(45, 212, 191, 0.12);
+  --teal-glow: rgba(45, 212, 191, 0.2);
+  --sky: #7dd3fc;
+  --sky-soft: rgba(125, 211, 252, 0.12);
+  --sky-glow: rgba(125, 211, 252, 0.2);
+  --code-bg: #1e1f36;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font-sans: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== Ambient background orbs ===== */
+.bg-orbs {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4;
+  transition: transform 0.8s var(--ease-out);
+}
+.bg-orb--1 {
+  width: 600px; height: 600px; top: -200px; left: -150px;
+  background: rgba(167, 139, 250, 0.12);
+}
+.bg-orb--2 {
+  width: 500px; height: 500px; bottom: -200px; right: -100px;
+  background: rgba(45, 212, 191, 0.08);
+}
+.bg-orb--3 {
+  width: 400px; height: 400px; top: 40%; left: 50%;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+/* ===== Cursor glow ===== */
+.cursor-glow {
+  position: fixed; pointer-events: none; z-index: 9999;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+
+/* ===== Typography ===== */
+a { color: var(--accent); text-decoration: none; transition: var(--transition); position: relative; }
+a:hover { color: #c4b5fd; }
+h1, h2, h3 { line-height: 1.3; letter-spacing: -0.02em; }
+::selection { background: rgba(167, 139, 250, 0.3); color: #fff; }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== Header ===== */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-glass); backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-soft);
+  height: 56px; transition: all 0.3s var(--ease-out);
+}
+.header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+.header-inner {
+  max-width: 960px; margin: 0 auto; padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; height: 100%;
+}
+.logo {
+  font-size: 1.15rem; font-weight: 700; color: var(--text-primary);
+  display: flex; align-items: center; gap: .5rem; text-decoration: none;
+}
+.logo-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 8px var(--accent-glow); transform: scale(1); }
+  50% { box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow); transform: scale(1.4); }
+}
+.nav { display: flex; gap: .25rem; position: relative; }
+.nav-link {
+  color: var(--text-secondary); padding: .4rem .8rem;
+  border-radius: var(--radius-sm); font-size: .9rem; transition: all 0.2s var(--ease-out);
+  position: relative; cursor: pointer;
+}
+.nav-link:hover { color: var(--text-primary); background: var(--accent-soft); text-decoration: none; }
+.nav-link.active { color: var(--text-primary); }
+.nav-indicator {
+  position: absolute; bottom: -4px; height: 2px; background: var(--accent);
+  border-radius: 2px; transition: all 0.35s var(--ease-spring);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ===== Layout ===== */
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+.main { padding: 2.5rem 0; position: relative; z-index: 1; }
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center; padding: 4rem 1rem 5rem;
+  position: relative; overflow: visible;
+}
+.hero-emoji {
+  font-size: 4rem; margin-bottom: 1rem; display: inline-block;
+  animation: float 3s ease-in-out infinite;
+  cursor: pointer; user-select: none;
+}
+.hero-emoji:active { animation: float-fast .6s ease-in-out; }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(3deg); }
+  66% { transform: translateY(-4px) rotate(-3deg); }
+}
+@keyframes float-fast {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.15); }
+}
+.hero h1 {
+  font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #c4b5fd 0%, #7dd3fc 40%, #a78bfa 70%, #c4b5fd 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: .75rem;
+  animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hero-desc {
+  font-size: 1.15rem; color: var(--text-secondary);
+  max-width: 480px; margin: 0 auto 2rem;
+}
+.hero-btns { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .7rem 1.6rem; border-radius: var(--radius); border: none;
+  font-size: .9rem; font-weight: 600; transition: all 0.25s var(--ease-out);
+  cursor: pointer; position: relative; overflow: hidden;
+  font-family: inherit; text-decoration: none;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6); color: #fff;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 35px rgba(167, 139, 250, 0.4);
+  color: #fff; text-decoration: none;
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-ghost {
+  background: transparent; color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--text-muted); text-decoration: none; transform: translateY(-2px); }
+.btn-ghost:active { transform: scale(0.97); }
+.btn .ripple {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transform: scale(0); animation: ripple .6s ease-out;
+  pointer-events: none;
+}
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ===== Section Headers ===== */
+.section { margin-bottom: 3.5rem; }
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 1.5rem; padding-bottom: .75rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.section-header h2 {
+  font-size: 1.35rem; font-weight: 700;
+  display: flex; align-items: center; gap: .5rem;
+}
+.section-header h2 .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  animation: dot-blink 2s ease-in-out infinite;
+}
+@keyframes dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.section-header h2 .dot.purple { background: var(--accent); animation-delay: 0s; }
+.section-header h2 .dot.warm { background: var(--warm); animation-delay: 0.6s; }
+.section-header h2 .dot.sky { background: var(--sky); animation-delay: 1.2s; }
+.section-more {
+  font-size: .85rem; color: var(--text-muted); transition: var(--transition);
+  display: flex; align-items: center; gap: .25rem;
+}
+.section-more:hover { color: var(--accent); gap: .5rem; }
+.section-more .arrow { transition: transform 0.25s var(--ease-out); }
+.section-more:hover .arrow { transform: translateX(4px); }
+
+/* ===== Blog Cards ===== */
+.blog-list { display: grid; gap: 1rem; }
+.blog-card {
+  display: block; padding: 1.5rem;
+  background: var(--bg-surface); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  transition: all 0.35s var(--ease-out);
+  position: relative; overflow: hidden;
+  text-decoration: none;
+}
+.blog-card::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(167,139,250,0.05), transparent 50%);
+  opacity: 0; transition: opacity 0.35s var(--ease-out);
+}
+.blog-card::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  transform: scaleY(0); transition: transform 0.35s var(--ease-spring);
+}
+.blog-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 60px rgba(167, 139, 250, 0.08);
+  border-color: rgba(167, 139, 250, 0.3);
+}
+.blog-card:hover::before { opacity: 1; }
+.blog-card:hover::after { transform: scaleY(1); }
+.blog-card:hover .blog-card-title { color: var(--accent); }
+.blog-card:active { transform: scale(0.99); }
+.blog-card-date {
+  display: block; font-size: .78rem; color: var(--text-muted); margin-bottom: .35rem;
+  font-variant-numeric: tabular-nums; position: relative; z-index: 1;
+}
+.blog-card-title {
+  font-size: 1.25rem; font-weight: 700; color: var(--text-primary);
+  margin-bottom: .5rem; transition: color 0.35s var(--ease-out);
+  position: relative; z-index: 1;
+}
+.blog-card-desc {
+  font-size: .9rem; color: var(--text-secondary); line-height: 1.65;
+  margin-bottom: .75rem; position: relative; z-index: 1;
+}
+.blog-card-tags { display: flex; gap: .4rem; flex-wrap: wrap; position: relative; z-index: 1; }
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: .7rem; padding: .2rem .6rem;
+  border-radius: 20px; font-weight: 500;
+  transition: all 0.25s var(--ease-out);
+}
+.tag:hover { transform: scale(1.1); }
+.tag-purple { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(167,139,250,0.15); }
+.tag-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(45,212,191,0.15); }
+.tag-warm { background: var(--warm-soft); color: var(--warm); border: 1px solid rgba(245,158,11,0.15); }
+.tag-sky { background: var(--sky-soft); color: var(--sky); border: 1px solid rgba(125,211,252,0.15); }
+.tag-rose { background: var(--rose-soft); color: var(--rose); border: 1px solid rgba(251,113,133,0.15); }
+
+/* ===== Timeline ===== */
+.timeline { position: relative; padding-left: 2.2rem; }
+.timeline::before {
+  content: ""; position: absolute; left: .5rem; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--border), var(--warm), var(--border), transparent);
+}
+.timeline-item { position: relative; padding-bottom: 1.5rem; }
+.timeline-dot {
+  position: absolute; left: -2.2rem; top: .5rem;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg-base);
+  box-shadow: 0 0 10px var(--accent-glow);
+  z-index: 1; transition: all 0.35s var(--ease-out);
+}
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.5);
+  box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+}
+.timeline-dot.warm { background: var(--warm); box-shadow: 0 0 10px var(--warm-glow); }
+.timeline-item:hover .timeline-dot.warm { box-shadow: 0 0 20px var(--warm-glow), 0 0 40px var(--warm-glow); }
+.timeline-dot.sky { background: var(--sky); box-shadow: 0 0 10px var(--sky-glow); }
+.timeline-item:hover .timeline-dot.sky { box-shadow: 0 0 20px var(--sky-glow), 0 0 40px var(--sky-glow); }
+.timeline-dot.rose { background: var(--rose); box-shadow: 0 0 10px var(--rose-glow); }
+.timeline-item:hover .timeline-dot.rose { box-shadow: 0 0 20px var(--rose-glow), 0 0 40px var(--rose-glow); }
+.timeline-dot.teal { background: var(--teal); box-shadow: 0 0 10px var(--teal-glow); }
+.timeline-item:hover .timeline-dot.teal { box-shadow: 0 0 20px var(--teal-glow), 0 0 40px var(--teal-glow); }
+.timeline-card {
+  background: var(--bg-surface); border: 1px solid var(--border-soft);
+  border-radius: var(--radius); padding: 1.1rem 1.3rem;
+  transition: all 0.35s var(--ease-out);
+  position: relative;
+}
+.timeline-card:hover {
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  transform: translateX(6px);
+}
+.timeline-text { font-size: .93rem; color: var(--text-secondary); line-height: 1.75; }
+.timeline-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .7rem; flex-wrap: wrap; gap: .5rem; }
+.timeline-time { font-size: .72rem; color: var(--text-muted); }
+.timeline-tags { display: flex; gap: .3rem; flex-wrap: wrap; }
+.timeline-tag { font-size: .68rem; padding: .1rem .5rem; border-radius: 10px; background: var(--bg-elevated); color: var(--text-muted); transition: all 0.2s; }
+.timeline-card:hover .timeline-tag { background: var(--accent-soft); color: var(--accent); }
+
+/* ===== Article ===== */
+.article { max-width: 720px; margin: 0 auto; }
+.article-back {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .85rem; color: var(--text-muted); margin-bottom: 1.5rem;
+  transition: all 0.25s var(--ease-out);
+}
+.article-back:hover { color: var(--accent); gap: .6rem; }
+.article-back .arr { transition: transform 0.25s var(--ease-out); }
+.article-back:hover .arr { transform: translateX(-4px); }
+.article h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: .75rem; }
+.article-meta { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .85rem; color: var(--text-muted); margin-bottom: 2rem; align-items: center; }
+
+/* ===== Prose ===== */
+.prose { line-height: 1.85; }
+.prose h2 {
+  font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 1rem;
+  padding-bottom: .5rem; border-bottom: 1px solid var(--border-soft);
+}
+.prose h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 .75rem; }
+.prose p { margin: 1rem 0; color: var(--text-secondary); }
+.prose ul, .prose ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+.prose li { margin: .4rem 0; }
+.prose blockquote {
+  margin: 1.5rem 0; padding: 1rem 1.3rem;
+  border-left: 3px solid var(--accent); background: var(--bg-surface);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: all 0.3s var(--ease-out);
+}
+.prose blockquote:hover { border-left-color: var(--teal); background: var(--bg-elevated); }
+.prose blockquote p { color: var(--text-secondary); margin: 0; }
+.prose :not(pre) > code {
+  background: var(--accent-soft); color: var(--accent);
+  padding: .15em .45em; border-radius: 5px; font-size: .85em;
+  font-family: var(--font-mono);
+}
+.prose pre {
+  margin: 1.5rem 0; padding: 1.3rem 1.5rem;
+  background: var(--code-bg); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg); overflow-x: auto;
+  font-size: .85rem; line-height: 1.75;
+  font-family: var(--font-mono);
+  position: relative;
+  transition: all 0.3s var(--ease-out);
+}
+.prose pre:hover {
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 30px rgba(167, 139, 250, 0.05);
+}
+.prose pre code { background: none; color: #e2e4f0; padding: 0; font-size: inherit; }
+.hljs-comment { color: #636d83; font-style: italic; }
+.hljs-keyword { color: #c792ea; }
+.hljs-string { color: #c3e88d; }
+.hljs-number { color: #f78c6c; }
+.hljs-function { color: #82aaff; }
+.hljs-built_in { color: #ffcb6b; }
+.hljs-title { color: #82aaff; }
+.hljs-params { color: #eeffff; }
+.hljs-meta { color: #89ddff; }
+
+/* ===== About ===== */
+.about { max-width: 720px; margin: 0 auto; }
+.about-header { text-align: center; margin-bottom: 2.5rem; }
+.about-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; margin: 0 auto 1rem;
+  box-shadow: 0 0 30px var(--accent-glow);
+  animation: float 4s ease-in-out infinite;
+  cursor: pointer; transition: all 0.3s var(--ease-out);
+}
+.about-avatar:hover { box-shadow: 0 0 50px var(--accent-glow); transform: scale(1.05); }
+.about-header h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: .3rem; }
+.about-header p { color: var(--text-muted); }
+.social-links { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+.social-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .6rem 1.1rem; border-radius: var(--radius);
+  background: var(--bg-surface); border: 1px solid var(--border-soft);
+  font-size: .85rem; color: var(--text-secondary);
+  transition: all 0.3s var(--ease-spring);
+}
+.social-link:hover {
+  border-color: var(--accent); color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  text-decoration: none;
+}
+
+/* ===== Comments placeholder ===== */
+.comments-placeholder {
+  margin-top: 3rem; padding: 2rem;
+  background: var(--bg-surface); border: 1px dashed var(--border);
+  border-radius: var(--radius-lg); text-align: center; color: var(--text-muted);
+  font-size: .9rem; transition: all 0.3s;
+}
+.comments-placeholder:hover { border-color: var(--accent); background: var(--bg-elevated); }
+
+/* ===== Footer ===== */
+.footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 2rem 0; margin-top: 4rem; text-align: center; position: relative; z-index: 1;
+}
+.footer p { color: var(--text-muted); font-size: .82rem; }
+.footer p span { transition: color 0.2s; }
+.footer p span:hover { color: var(--accent); }
+
+/* ===== Scroll-reveal ===== */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.05s; }
+.reveal-delay-2 { transition-delay: 0.1s; }
+.reveal-delay-3 { transition-delay: 0.15s; }
+.reveal-delay-4 { transition-delay: 0.2s; }
+
+/* ===== Keyboard focus ===== */
+:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-desc { font-size: 1rem; }
+  .blog-card { padding: 1.1rem; }
+  .article h1 { font-size: 1.6rem; }
+  .article { padding: 0 .5rem; }
+  .timeline-card:hover { transform: translateX(3px); }
+  .cursor-glow { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Ambient background -->
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb--1" data-parallax="0.03"></div>
+  <div class="bg-orb bg-orb--2" data-parallax="0.05"></div>
+  <div class="bg-orb bg-orb--3" data-parallax="0.04"></div>
+</div>
+
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ===== Header ===== -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-dot"></span>数字花园</a>
+    <nav class="nav" id="nav">
+      <a href="#home" class="nav-link active" data-section="home">首页</a>
+      <a href="#blog" class="nav-link" data-section="blog">文章</a>
+      <a href="#thoughts" class="nav-link" data-section="thoughts">动态</a>
+      <a href="#about" class="nav-link" data-section="about">关于</a>
+      <span class="nav-indicator" id="navIndicator"></span>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ===== 1. HOME PAGE ===== -->
+<section id="home">
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero reveal">
+      <div class="hero-emoji" id="heroEmoji">🌱</div>
+      <h1>数字花园</h1>
+      <p class="hero-desc">记录知识、思考与日常。一个持续生长的个人知识空间。</p>
+      <div class="hero-btns">
+        <a href="#blog" class="btn btn-primary"><span class="btn-icon">✨</span> 浏览文章</a>
+        <a href="#about" class="btn btn-ghost">关于我</a>
+      </div>
+    </div>
+
+    <!-- Latest Posts -->
+    <div class="section" id="blog">
+      <div class="section-header reveal">
+        <h2><span class="dot purple"></span>最新文章</h2>
+        <a href="#" class="section-more">查看全部 <span class="arrow">→</span></a>
+      </div>
+      <div class="blog-list">
+        <a href="#" class="blog-card reveal reveal-delay-1">
+          <span class="blog-card-date">2025年1月1日</span>
+          <h3 class="blog-card-title">你好，世界</h3>
+          <p class="blog-card-desc">这是我的第一篇文章，欢迎来到数字花园。这里记录着技术文章、学习笔记和生活感悟。</p>
+          <div class="blog-card-tags">
+            <span class="tag tag-purple">随笔</span>
+            <span class="tag tag-teal">开篇</span>
+          </div>
+        </a>
+        <a href="#" class="blog-card reveal reveal-delay-2">
+          <span class="blog-card-date">2025年1月3日</span>
+          <h3 class="blog-card-title">Python 高性能计算实践</h3>
+          <p class="blog-card-desc">NumPy 向量化、Numba JIT 编译、Cython 扩展 — 从入门到进阶的 Python 性能优化指南。</p>
+          <div class="blog-card-tags">
+            <span class="tag tag-purple">Python</span>
+            <span class="tag tag-sky">性能优化</span>
+            <span class="tag tag-teal">教程</span>
+          </div>
+        </a>
+        <a href="#" class="blog-card reveal reveal-delay-3">
+          <span class="blog-card-date">2025年2月15日</span>
+          <h3 class="blog-card-title">偏微分方程的数值解法</h3>
+          <p class="blog-card-desc">有限差分法求解热传导方程，配合 MATLAB 实现和可视化。</p>
+          <div class="blog-card-tags">
+            <span class="tag tag-warm">MATLAB</span>
+            <span class="tag tag-purple">数值分析</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Latest Thoughts -->
+    <div class="section" id="thoughts">
+      <div class="section-header reveal">
+        <h2><span class="dot warm"></span>最近动态</h2>
+        <a href="#" class="section-more">查看全部 <span class="arrow">→</span></a>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-dot warm"></div>
+          <div class="timeline-card">
+            <p class="timeline-text">🌱 数字花园今天开始播种了。终于搭建好了基础框架，接下来就是持续地写作和记录了～</p>
+            <div class="timeline-footer">
+              <time class="timeline-time">1 天前</time>
+              <div class="timeline-tags"><span class="timeline-tag">#碎碎念</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+          <div class="timeline-dot teal"></div>
+          <div class="timeline-card">
+            <p class="timeline-text">📝 在配置 Astro + KaTeX 中，数学公式 $E=mc^2$ 渲染完美。深色模式下代码块的视觉效果也很棒，Shiki 的 highlight 比 Prism 细腻很多。</p>
+            <div class="timeline-footer">
+              <time class="timeline-time">2 天前</time>
+              <div class="timeline-tags"><span class="timeline-tag">#技术</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+          <div class="timeline-dot sky"></div>
+          <div class="timeline-card">
+            <p class="timeline-text">正在思考数字花园应该长成什么样子... 不只是博客，更是知识的沉淀。也许可以加入一个"知识图谱"功能，把文章之间的关联可视化出来？</p>
+            <div class="timeline-footer">
+              <time class="timeline-time">3 天前</time>
+              <div class="timeline-tags"><span class="timeline-tag">#思考</span><span class="timeline-tag">#设计</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-4">
+          <div class="timeline-dot rose"></div>
+          <div class="timeline-card">
+            <p class="timeline-text">😤 今天被一个 bug 折磨了 4 个小时，最后发现是多了一个空格... 这就是程序员的日常吧</p>
+            <div class="timeline-footer">
+              <time class="timeline-time">4 天前</time>
+              <div class="timeline-tags"><span class="timeline-tag">#碎碎念</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== 2. BLOG DETAIL PAGE ===== -->
+<section style="margin-top: 4rem; padding-top: 2rem; border-top: 2px dashed var(--border);">
+  <div class="container">
+    <div class="article reveal">
+      <a href="#" class="article-back"><span class="arr">←</span> 返回文章列表</a>
+      <h1>你好，世界</h1>
+      <div class="article-meta">
+        <span>2025年1月1日</span>
+        <span class="tag tag-purple">随笔</span>
+        <span class="tag tag-teal">开篇</span>
+      </div>
+      <div class="prose">
+        <p>欢迎来到我的数字花园 🌱</p>
+        <p>这里是记录知识、思考和日常的地方。我会在这里分享技术文章、学习笔记和生活感悟。</p>
+
+        <h2>关于这个站点</h2>
+        <p>这个网站使用 <strong>Astro</strong> 构建，托管在 GitHub Pages 上。深色的背景搭配柔和的紫色调，灵感来自深夜写代码时的配色。</p>
+
+        <h3>特色功能</h3>
+        <ul>
+          <li><strong>代码高亮</strong> — 支持 Python、MATLAB 等多种语言，配色取自 Tokyo Night 主题</li>
+          <li><strong>数学公式</strong> — 使用 KaTeX 渲染 LaTeX 公式，行内和块级公式都完美支持</li>
+          <li><strong>短动态</strong> — 通过 Memos API 随时记录灵感和日常，像发朋友圈一样简单</li>
+        </ul>
+
+        <h2>代码示例</h2>
+        <p>Python 斐波那契数列：</p>
+        <pre><code><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> List
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">fibonacci</span>(<span class="hljs-params">n: <span class="hljs-built_in">int</span></span>) -> <span class="hljs-title">List</span>[<span class="hljs-built_in">int</span>]:
+    <span class="hljs-string">"""生成斐波那契数列的前 n 项"""</span>
+    <span class="hljs-keyword">if</span> n <= <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span> []
+    <span class="hljs-keyword">if</span> n == <span class="hljs-number">1</span>: <span class="hljs-keyword">return</span> [<span class="hljs-number">0</span>]
+    fib = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, n):
+        fib.append(fib[i-<span class="hljs-number">1</span>] + fib[i-<span class="hljs-number">2</span>])
+    <span class="hljs-keyword">return</span> fib
+
+<span class="hljs-built_in">print</span>(fibonacci(<span class="hljs-number">10</span>))</code></pre>
+
+        <p>MATLAB 示例：</p>
+        <pre><code><span class="hljs-comment">% 绘制正弦波</span>
+x = linspace(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>*pi, <span class="hljs-number">100</span>);
+y = sin(x);
+figure; plot(x, y, <span class="hljs-string">'LineWidth'</span>, <span class="hljs-number">2</span>);
+title(<span class="hljs-string">'正弦函数'</span>);
+xlabel(<span class="hljs-string">'x'</span>); ylabel(<span class="hljs-string">'sin(x)'</span>);
+grid on;</code></pre>
+
+        <h2>数学公式</h2>
+        <p>爱因斯坦质能方程：<code>$E = mc^2$</code></p>
+
+        <blockquote>
+          <p>💡 数字花园不同于传统博客：它不追求完美的"最终稿"，而是持续更新、不断生长的活文档。每一篇文章都是一棵正在成长的植物。</p>
+        </blockquote>
+
+        <p>高斯积分：</p>
+        <p style="text-align:center; font-size:1.15rem; padding: .5rem 0; color: var(--text-primary);">
+          ∫<sub>-∞</sub><sup>∞</sup> e<sup>-x²</sup> dx = √π
+        </p>
+
+        <p>波动方程：</p>
+        <p style="text-align:center; font-size:1.15rem; padding: .5rem 0; color: var(--text-primary);">
+          ∂²u/∂t² = c²∇²u
+        </p>
+      </div>
+
+      <div class="comments-placeholder reveal">
+        💬 评论区域 — 由 Giscus 驱动（基于 GitHub Discussions）
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. ABOUT PAGE ===== -->
+<section id="about" style="margin-top: 4rem; padding-top: 2rem; border-top: 2px dashed var(--border);">
+  <div class="container">
+    <div class="about reveal">
+      <div class="about-header">
+        <div class="about-avatar" id="aboutAvatar">🌱</div>
+        <h1>关于我</h1>
+        <p>一个喜欢记录的人</p>
+      </div>
+
+      <div class="prose">
+        <p>你好！欢迎来到我的数字花园。</p>
+        <p>这是一个用 <strong>Astro</strong> 构建的个人网站，托管在 GitHub Pages 上。这里记录着我的技术学习、项目经验和日常碎碎念。</p>
+
+        <h2>关于这个网站</h2>
+        <p>不像传统博客那样追求完美的"最终稿"，数字花园更像是一个持续生长的知识空间。每一篇文章都是活的——会随着我的理解加深而不断更新和演化。</p>
+        <p>核心设计理念：</p>
+        <ul>
+          <li>📝 <strong>长文章</strong> — 通过 Markdown 文件管理，版本控制在 Git 中，确保数据的完全掌控</li>
+          <li>💭 <strong>短动态</strong> — 通过 Memos 随时随地发布，像发朋友圈一样简单，无需提交代码</li>
+          <li>🎨 <strong>深色主题</strong> — 柔和的暗色背景 + 紫色点缀，让阅读和写作都更舒适</li>
+          <li>🔗 <strong>知识连接</strong> — 文章之间通过标签和引用形成网络，而非孤立存在</li>
+        </ul>
+      </div>
+
+      <div class="social-links">
+        <a href="#" class="social-link reveal reveal-delay-1">📧 Email</a>
+        <a href="#" class="social-link reveal reveal-delay-2">🐙 GitHub</a>
+        <a href="#" class="social-link reveal reveal-delay-3">🐦 Twitter</a>
+        <a href="#" class="social-link reveal reveal-delay-4">📡 RSS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>© 2025 <span>数字花园</span> · 用 ❤️ 和 Astro 构建 · 托管于 GitHub Pages</p>
+  </div>
+</footer>
+
+<script>
+// ===== Cursor glow =====
+const glow = document.getElementById('cursorGlow');
+let mouseX = -500, mouseY = -500;
+let glowX = -500, glowY = -500;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+function animateGlow() {
+  glowX += (mouseX - glowX) * 0.08;
+  glowY += (mouseY - glowY) * 0.08;
+  glow.style.left = glowX + 'px';
+  glow.style.top = glowY + 'px';
+  requestAnimationFrame(animateGlow);
+}
+animateGlow();
+
+// ===== Parallax background orbs =====
+document.addEventListener('mousemove', (e) => {
+  const orbs = document.querySelectorAll('[data-parallax]');
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const dx = (e.clientX - cx) / cx;
+  const dy = (e.clientY - cy) / cy;
+  orbs.forEach(orb => {
+    const factor = parseFloat(orb.dataset.parallax);
+    orb.style.transform = `translate(${dx * factor * 60}px, ${dy * factor * 60}px)`;
+  });
+});
+
+// ===== Scroll reveal (Intersection Observer) =====
+const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Force hero visible immediately
+document.querySelector('.hero.reveal')?.classList.add('visible');
+
+// ===== Header scroll effect =====
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ===== Nav indicator =====
+const nav = document.getElementById('nav');
+const indicator = document.getElementById('navIndicator');
+const navLinks = nav.querySelectorAll('.nav-link');
+
+function updateIndicator(link) {
+  const rect = link.getBoundingClientRect();
+  const navRect = nav.getBoundingClientRect();
+  indicator.style.width = rect.width + 'px';
+  indicator.style.left = (rect.left - navRect.left) + 'px';
+}
+
+// Initial indicator
+const activeLink = nav.querySelector('.nav-link.active');
+if (activeLink) updateIndicator(activeLink);
+
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    navLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    updateIndicator(link);
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  link.addEventListener('mouseenter', () => updateIndicator(link));
+  link.addEventListener('mouseleave', () => {
+    const active = nav.querySelector('.nav-link.active');
+    if (active) updateIndicator(active);
+  });
+});
+
+// ===== Button ripple =====
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+    this.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+  });
+});
+
+// ===== Hero emoji click party =====
+const emojis = ['🌱', '🌸', '🌿', '🪴', '🌻', '🌷', '🍀', '🌾', '💐', '🌺'];
+const heroEmoji = document.getElementById('heroEmoji');
+let clickCount = 0;
+heroEmoji.addEventListener('click', function() {
+  clickCount++;
+  this.textContent = emojis[clickCount % emojis.length];
+  // Spawn floating emojis
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const particle = document.createElement('span');
+      particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      particle.style.cssText = `
+        position: absolute; font-size: 1.5rem; pointer-events: none; z-index: 10;
+        left: ${50 + (Math.random()-0.5)*30}%; top: ${40 + (Math.random()-0.5)*20}%;
+        animation: particle-up 0.8s ease-out forwards;
+      `;
+      this.parentElement.appendChild(particle);
+      particle.addEventListener('animationend', () => particle.remove());
+    }, i * 60);
+  }
+});
+
+// Add particle keyframes
+const particleStyle = document.createElement('style');
+particleStyle.textContent = `
+  @keyframes particle-up {
+    0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.3) rotate(40deg); }
+  }
+`;
+document.head.appendChild(particleStyle);
+
+// ===== About avatar spin on hover =====
+const aboutAvatar = document.getElementById('aboutAvatar');
+if (aboutAvatar) {
+  aboutAvatar.addEventListener('mouseenter', () => {
+    aboutAvatar.style.transform = 'rotate(360deg) scale(1.1)';
+  });
+  aboutAvatar.addEventListener('mouseleave', () => {
+    aboutAvatar.style.transform = 'rotate(0deg) scale(1)';
+  });
+}
+
+// ===== Timeline items stagger on hover =====
+document.querySelectorAll('.timeline-item').forEach(item => {
+  const dot = item.querySelector('.timeline-dot');
+  item.addEventListener('mouseenter', () => {
+    dot.style.transform = 'scale(1.6)';
+  });
+  item.addEventListener('mouseleave', () => {
+    dot.style.transform = 'scale(1)';
+  });
+});
+
+console.log('🌱 数字花园预览已就绪 — 试试滚动、悬停卡片、点击首页 emoji！');
+</script>
+</body>
+</html>

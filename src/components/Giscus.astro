@@ -24,37 +24,37 @@ const {
   reactionsEnabled = "1",
   emitMetadata = "0",
   inputPosition = "bottom",
-  theme = "dark",
+  theme = "dark_dimmed",
   lang = "zh-CN",
   loading = "lazy",
 } = Astro.props;
 ---
 
-<section class="giscus-wrapper">
+<section class="giscus-wrapper reveal">
   <div id="giscus-comments"></div>
-
-  <script
-    src="https://giscus.app/client.js"
-    data-repo={repo}
-    data-repo-id={repoId}
-    data-category={category}
-    data-category-id={categoryId}
-    data-mapping={mapping}
-    data-strict={strict}
-    data-reactions-enabled={reactionsEnabled}
-    data-emit-metadata={emitMetadata}
-    data-input-position={inputPosition}
-    data-theme={theme}
-    data-lang={lang}
-    data-loading={loading}
-    async
-  >
-  </script>
-
-  <noscript>
-    <p class="noscript">需要启用 JavaScript 才能查看评论。</p>
-  </noscript>
 </section>
+
+<script
+  src="https://giscus.app/client.js"
+  data-repo={repo}
+  data-repo-id={repoId}
+  data-category={category}
+  data-category-id={categoryId}
+  data-mapping={mapping}
+  data-strict={strict}
+  data-reactions-enabled={reactionsEnabled}
+  data-emit-metadata={emitMetadata}
+  data-input-position={inputPosition}
+  data-theme={theme}
+  data-lang={lang}
+  data-loading={loading}
+  async
+>
+</script>
+
+<noscript>
+  <p class="noscript">需要启用 JavaScript 才能查看评论。</p>
+</noscript>
 
 <style>
   .giscus-wrapper {
@@ -64,8 +64,8 @@ const {
   .noscript {
     text-align: center;
     padding: 2rem;
-    color: var(--text-tertiary);
-    border: 1px dashed var(--border-primary);
-    border-radius: 8px;
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
   }
 </style>

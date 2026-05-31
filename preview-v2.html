@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字花园 v2 — 侧栏布局预览</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --bg-base: #1a1b2e;
+  --bg-surface: #232440;
+  --bg-elevated: #2b2d4a;
+  --bg-glass: rgba(26, 27, 46, 0.7);
+  --border: #353758;
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --text-primary: #e8e6f0;
+  --text-secondary: #b4b2c4;
+  --text-muted: #78778a;
+  --accent: #a78bfa;
+  --accent-soft: rgba(167, 139, 250, 0.12);
+  --accent-glow: rgba(167, 139, 250, 0.25);
+  --warm: #f59e0b;
+  --warm-soft: rgba(245, 158, 11, 0.12);
+  --warm-glow: rgba(245, 158, 11, 0.2);
+  --rose: #fb7185;
+  --rose-soft: rgba(251, 113, 133, 0.1);
+  --teal: #2dd4bf;
+  --teal-soft: rgba(45, 212, 191, 0.12);
+  --sky: #7dd3fc;
+  --sky-soft: rgba(125, 211, 252, 0.12);
+  --code-bg: #1e1f36;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font-sans: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* layout dimensions */
+  --sidebar-w: 240px;
+  --toc-w: 200px;
+  --content-max-w: 860px;
+  --gap: 2.5rem;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== Ambient background orbs ===== */
+.bg-orbs {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4;
+  transition: transform 0.8s var(--ease-out);
+}
+.bg-orb--1 {
+  width: 600px; height: 600px; top: -200px; left: -150px;
+  background: rgba(167, 139, 250, 0.12);
+}
+.bg-orb--2 {
+  width: 500px; height: 500px; bottom: -200px; right: -100px;
+  background: rgba(45, 212, 191, 0.08);
+}
+.bg-orb--3 {
+  width: 400px; height: 400px; top: 40%; left: 50%;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+/* ===== Cursor glow ===== */
+.cursor-glow {
+  position: fixed; pointer-events: none; z-index: 9999;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+
+/* ===== Typography ===== */
+a { color: var(--accent); text-decoration: none; transition: all 0.25s var(--ease-out); position: relative; }
+a:hover { color: #c4b5fd; }
+h1, h2, h3 { line-height: 1.3; letter-spacing: -0.02em; }
+::selection { background: rgba(167, 139, 250, 0.3); color: #fff; }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== PAGE SHELL: three-column with CSS grid ===== */
+.page-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--toc-w);
+  gap: var(--gap);
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ================================================
+   LEFT SIDEBAR — fixed avatar + name + nav
+   ================================================ */
+.sidebar {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl);
+  padding: 1.8rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  transition: border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+
+.sidebar-card:hover {
+  border-color: rgba(167, 139, 250, 0.2);
+  box-shadow: 0 0 60px rgba(167, 139, 250, 0.06);
+}
+
+/* Avatar */
+.sidebar-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa, #2dd4bf);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 30px var(--accent-glow);
+  cursor: pointer;
+  transition: all 0.45s var(--ease-spring);
+  flex-shrink: 0;
+  animation: avatar-float 4s ease-in-out infinite;
+}
+
+@keyframes avatar-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.sidebar-avatar:hover {
+  box-shadow: 0 0 50px var(--accent-glow), 0 0 80px rgba(45, 212, 191, 0.2);
+  transform: scale(1.08) rotate(5deg);
+}
+
+/* Name */
+.sidebar-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+/* Signature / motto */
+.sidebar-sig {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* Divider */
+.sidebar-divider {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin-bottom: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Vertical Nav */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  flex: 1;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.25s var(--ease-out);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+}
+
+.sidebar-nav-link:hover {
+  color: var(--text-primary);
+  background: var(--accent-soft);
+  text-decoration: none;
+}
+
+.sidebar-nav-link.active {
+  color: var(--text-primary);
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.sidebar-nav-link .nav-icon {
+  font-size: 1.05rem;
+  width: 1.4rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Bottom status dot */
+.sidebar-status {
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.6); }
+}
+
+/* ================================================
+   CENTER — main content
+   ================================================ */
+.content-area {
+  min-width: 0; /* prevent grid blowout */
+}
+
+/* Article styling */
+.article-header {
+  margin-bottom: 2rem;
+}
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.85rem; color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  transition: all 0.25s var(--ease-out);
+  text-decoration: none;
+}
+.article-back:hover { color: var(--accent); gap: 0.6rem; }
+.article-back .arr { transition: transform 0.25s var(--ease-out); }
+.article-back:hover .arr { transform: translateX(-4px); }
+
+.article-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+}
+
+.article-meta {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--text-muted);
+  align-items: center;
+}
+
+.article-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+/* Prose */
+.prose { line-height: 1.85; }
+.prose h2 {
+  font-size: 1.45rem; font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.prose h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.75rem; }
+.prose p { margin: 1rem 0; color: var(--text-secondary); }
+.prose ul, .prose ol { margin: 1rem 0; padding-left: 1.5rem; color: var(--text-secondary); }
+.prose li { margin: 0.4rem 0; }
+.prose blockquote {
+  margin: 1.5rem 0; padding: 1rem 1.3rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-surface);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: all 0.3s var(--ease-out);
+}
+.prose blockquote:hover { border-left-color: var(--teal); background: var(--bg-elevated); }
+.prose blockquote p { color: var(--text-secondary); margin: 0; }
+.prose :not(pre) > code {
+  background: var(--accent-soft); color: var(--accent);
+  padding: 0.15em 0.45em; border-radius: 5px;
+  font-size: 0.85em; font-family: var(--font-mono);
+}
+.prose pre {
+  margin: 1.5rem 0; padding: 1.3rem 1.5rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  font-size: 0.85rem; line-height: 1.75;
+  font-family: var(--font-mono);
+  transition: all 0.3s var(--ease-out);
+}
+.prose pre:hover {
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 30px rgba(167, 139, 250, 0.05);
+}
+.prose pre code { background: none; color: #e2e4f0; padding: 0; font-size: inherit; }
+
+/* ===== Tags ===== */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 0.7rem; padding: 0.2rem 0.6rem;
+  border-radius: 20px; font-weight: 500;
+  transition: all 0.25s var(--ease-out);
+}
+.tag:hover { transform: scale(1.1); }
+.tag-purple { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(167,139,250,0.15); }
+.tag-teal { background: var(--teal-soft); color: var(--teal); border: 1px solid rgba(45,212,191,0.15); }
+.tag-warm { background: var(--warm-soft); color: var(--warm); border: 1px solid rgba(245,158,11,0.15); }
+.tag-sky { background: var(--sky-soft); color: var(--sky); border: 1px solid rgba(125,211,252,0.15); }
+.tag-rose { background: var(--rose-soft); color: var(--rose); border: 1px solid rgba(251,113,133,0.15); }
+
+/* ===== Comments ===== */
+.comments-placeholder {
+  margin-top: 3rem; padding: 2rem;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center; color: var(--text-muted);
+  font-size: 0.9rem; transition: all 0.3s;
+}
+.comments-placeholder:hover { border-color: var(--accent); background: var(--bg-elevated); }
+
+/* ================================================
+   RIGHT SIDEBAR — Table of Contents
+   ================================================ */
+.toc-sidebar {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+}
+
+.toc-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.1rem;
+  transition: border-color 0.35s var(--ease-out);
+}
+
+.toc-card:hover {
+  border-color: rgba(167, 139, 250, 0.15);
+}
+
+.toc-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.toc-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.toc-item {
+  display: block;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  transition: all 0.25s var(--ease-out);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.toc-item:hover {
+  color: var(--text-secondary);
+  background: var(--accent-soft);
+  border-left-color: rgba(167, 139, 250, 0.3);
+}
+
+.toc-item.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.toc-item.toc-h3 {
+  padding-left: 1.5rem;
+  font-size: 0.78rem;
+}
+
+/* ===== Scroll reveal ===== */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  .page-shell {
+    grid-template-columns: var(--sidebar-w) 1fr;
+    gap: 1.5rem;
+  }
+  .toc-sidebar { display: none; }
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+    padding: 1rem 1rem 3rem;
+  }
+  .sidebar {
+    position: relative;
+    top: 0;
+    height: auto;
+  }
+  .sidebar-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+  }
+  .sidebar-avatar {
+    width: 40px; height: 40px;
+    font-size: 1.2rem;
+    margin-bottom: 0;
+    animation: none;
+  }
+  .sidebar-name { font-size: 0.95rem; margin-bottom: 0; }
+  .sidebar-sig { display: none; }
+  .sidebar-divider { display: none; }
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+  .sidebar-nav-link {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.6rem;
+  }
+  .sidebar-nav-link .nav-icon { display: none; }
+  .sidebar-status { display: none; }
+  .article-title { font-size: 1.6rem; }
+}
+
+/* ===== Code highlight colors (fake Shiki) ===== */
+.hljs-comment { color: #636d83; font-style: italic; }
+.hljs-keyword { color: #c792ea; }
+.hljs-string { color: #c3e88d; }
+.hljs-number { color: #f78c6c; }
+.hljs-function { color: #82aaff; }
+.hljs-built_in { color: #ffcb6b; }
+.hljs-title { color: #82aaff; }
+.hljs-params { color: #eeffff; }
+.hljs-meta { color: #89ddff; }
+</style>
+</head>
+<body>
+
+<!-- Ambient background -->
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb--1" data-parallax="0.03"></div>
+  <div class="bg-orb bg-orb--2" data-parallax="0.05"></div>
+  <div class="bg-orb bg-orb--3" data-parallax="0.04"></div>
+</div>
+
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ===== THREE-COLUMN SHELL ===== -->
+<div class="page-shell">
+
+  <!-- ============ LEFT SIDEBAR ============ -->
+  <aside class="sidebar reveal">
+    <div class="sidebar-card">
+      <!-- Avatar -->
+      <div class="sidebar-avatar" id="sidebarAvatar">🌱</div>
+
+      <!-- Name -->
+      <div class="sidebar-name">Shucheng Wei</div>
+
+      <!-- Signature / Motto -->
+      <p class="sidebar-sig">记录知识与日常<br>种一片自己的数字花园</p>
+
+      <!-- Divider -->
+      <div class="sidebar-divider"></div>
+
+      <!-- Vertical Navigation -->
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#home-section" class="sidebar-nav-link" data-section="home">
+          <span class="nav-icon">🏠</span> 首页
+        </a>
+        <a href="#blog-section" class="sidebar-nav-link active" data-section="blog">
+          <span class="nav-icon">📝</span> 文章
+        </a>
+        <a href="#thoughts-section" class="sidebar-nav-link" data-section="thoughts">
+          <span class="nav-icon">💭</span> 动态
+        </a>
+        <a href="#about-section" class="sidebar-nav-link" data-section="about">
+          <span class="nav-icon">🙋</span> 关于
+        </a>
+      </nav>
+
+      <!-- Bottom status -->
+      <div class="sidebar-status">
+        <span class="status-dot"></span> 在线 · 持续生长中
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ CENTER: Article Content ============ -->
+  <main class="content-area" id="blog-section">
+    <article class="reveal">
+
+      <!-- Article header -->
+      <header class="article-header">
+        <a href="#" class="article-back">
+          <span class="arr">←</span> 返回文章列表
+        </a>
+        <h1 class="article-title">你好，世界</h1>
+        <div class="article-meta">
+          <time>2025年1月1日</time>
+          <div class="article-tags">
+            <span class="tag tag-purple">随笔</span>
+            <span class="tag tag-teal">开篇</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== Article body with id anchors for TOC ===== -->
+      <div class="prose">
+        <p>欢迎来到我的数字花园 🌱</p>
+        <p>这里是记录知识、思考和日常的地方。我会在这里分享技术文章、学习笔记和生活感悟。</p>
+
+        <h2 id="about-site">关于这个站点</h2>
+        <p>这个网站使用 <strong>Astro</strong> 构建，托管在 GitHub Pages 上。深色的背景搭配柔和的紫色调，灵感来自深夜写代码时的配色。</p>
+
+        <h3 id="features">特色功能</h3>
+        <ul>
+          <li><strong>代码高亮</strong> — 支持 Python、MATLAB 等多种语言，配色取自 Tokyo Night 主题</li>
+          <li><strong>数学公式</strong> — 使用 KaTeX 渲染 LaTeX 公式，行内和块级公式都完美支持</li>
+          <li><strong>短动态</strong> — 通过 Memos API 随时记录灵感和日常，像发朋友圈一样简单</li>
+        </ul>
+
+        <h2 id="code-examples">代码示例</h2>
+        <p>Python 斐波那契数列：</p>
+        <pre><code><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> List
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">fibonacci</span>(<span class="hljs-params">n: <span class="hljs-built_in">int</span></span>) -> <span class="hljs-title">List</span>[<span class="hljs-built_in">int</span>]:
+    <span class="hljs-string">"""生成斐波那契数列的前 n 项"""</span>
+    <span class="hljs-keyword">if</span> n <= <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span> []
+    <span class="hljs-keyword">if</span> n == <span class="hljs-number">1</span>: <span class="hljs-keyword">return</span> [<span class="hljs-number">0</span>]
+    fib = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, n):
+        fib.append(fib[i-<span class="hljs-number">1</span>] + fib[i-<span class="hljs-number">2</span>])
+    <span class="hljs-keyword">return</span> fib
+
+<span class="hljs-built_in">print</span>(fibonacci(<span class="hljs-number">10</span>))</code></pre>
+
+        <p>MATLAB 示例：</p>
+        <pre><code><span class="hljs-comment">% 绘制正弦波</span>
+x = linspace(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>*pi, <span class="hljs-number">100</span>);
+y = sin(x);
+figure; plot(x, y, <span class="hljs-string">'LineWidth'</span>, <span class="hljs-number">2</span>);
+title(<span class="hljs-string">'正弦函数'</span>);
+xlabel(<span class="hljs-string">'x'</span>); ylabel(<span class="hljs-string">'sin(x)'</span>);
+grid on;</code></pre>
+
+        <h2 id="math-formulas">数学公式</h2>
+        <p>爱因斯坦质能方程：<code>$E = mc^2$</code></p>
+
+        <blockquote>
+          <p>💡 数字花园不同于传统博客：它不追求完美的"最终稿"，而是持续更新、不断生长的活文档。每一篇文章都是一棵正在成长的植物。</p>
+        </blockquote>
+
+        <p>高斯积分：</p>
+        <p style="text-align:center; font-size:1.15rem; padding: .5rem 0; color: var(--text-primary);">
+          ∫<sub>-∞</sub><sup>∞</sup> e<sup>-x²</sup> dx = √π
+        </p>
+
+        <h2 id="design-philosophy">设计理念</h2>
+        <p>左侧边栏展示个人身份与导航，进入文章后保持不变——这样无论你读到哪一篇文章，导航始终在那里，不会因为滚动而丢失方向。</p>
+        <p>右侧大纲自动追踪当前阅读位置，点击即可跳转到对应章节。文章区域比传统博客更宽，充分利用屏幕空间，阅读体验更沉浸。</p>
+
+        <h3 id="layout-breakdown">布局解析</h3>
+        <ul>
+          <li><strong>左侧栏 (240px)</strong> — 头像、名字、签名、竖排导航。固定不动，全局一致。</li>
+          <li><strong>中间文章区 (max 860px)</strong> — 更宽的阅读空间，代码块不再被挤压。</li>
+          <li><strong>右侧大纲 (200px)</strong> — 文章目录，实时高亮当前位置，靠右排列。</li>
+        </ul>
+
+        <h2 id="future-plans">后续计划</h2>
+        <p>这篇文章只是一个开始。数字花园将会持续生长，添加更多有趣的内容和功能——知识图谱、标签聚合、搜索……</p>
+        <p>敬请期待！🪴</p>
+      </div>
+
+      <!-- Comments -->
+      <div class="comments-placeholder reveal">
+        💬 评论区域 — 由 Giscus 驱动（基于 GitHub Discussions）
+      </div>
+    </article>
+  </main>
+
+  <!-- ============ RIGHT SIDEBAR: Table of Contents ============ -->
+  <aside class="toc-sidebar">
+    <nav class="toc-card reveal">
+      <div class="toc-title">📑 文章目录</div>
+      <ul class="toc-list" id="tocList">
+        <li><a href="#about-site" class="toc-item">关于这个站点</a></li>
+        <li><a href="#features" class="toc-item toc-h3">特色功能</a></li>
+        <li><a href="#code-examples" class="toc-item">代码示例</a></li>
+        <li><a href="#math-formulas" class="toc-item">数学公式</a></li>
+        <li><a href="#design-philosophy" class="toc-item">设计理念</a></li>
+        <li><a href="#layout-breakdown" class="toc-item toc-h3">布局解析</a></li>
+        <li><a href="#future-plans" class="toc-item">后续计划</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+</div>
+
+<script>
+// ===== Cursor glow =====
+const glow = document.getElementById('cursorGlow');
+let mouseX = -500, mouseY = -500;
+let glowX = -500, glowY = -500;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+function animateGlow() {
+  glowX += (mouseX - glowX) * 0.08;
+  glowY += (mouseY - glowY) * 0.08;
+  glow.style.left = glowX + 'px';
+  glow.style.top = glowY + 'px';
+  requestAnimationFrame(animateGlow);
+}
+animateGlow();
+
+// ===== Parallax background orbs =====
+document.addEventListener('mousemove', (e) => {
+  const orbs = document.querySelectorAll('[data-parallax]');
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const dx = (e.clientX - cx) / cx;
+  const dy = (e.clientY - cy) / cy;
+  orbs.forEach(orb => {
+    const factor = parseFloat(orb.dataset.parallax);
+    orb.style.transform = `translate(${dx * factor * 60}px, ${dy * factor * 60}px)`;
+  });
+});
+
+// ===== Scroll reveal =====
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Force the first .reveal visible immediately
+document.querySelector('.sidebar.reveal')?.classList.add('visible');
+document.querySelector('.content-area .reveal')?.classList.add('visible');
+document.querySelector('.toc-card.reveal')?.classList.add('visible');
+
+// ===== Sidebar nav —— click to activate =====
+const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
+sidebarNavLinks.forEach(link => {
+  link.addEventListener('click', function(e) {
+    sidebarNavLinks.forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ===== Sidebar avatar click —— emoji party =====
+const emojis = ['🌱', '🌸', '🌿', '🪴', '🌻', '🌷', '🍀', '🌾', '💐', '🌺'];
+const avatar = document.getElementById('sidebarAvatar');
+let clickCount = 0;
+avatar.addEventListener('click', function() {
+  clickCount++;
+  this.textContent = emojis[clickCount % emojis.length];
+
+  // get avatar's actual screen position
+  const rect = this.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  // spawn floating particles around the avatar
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const particle = document.createElement('span');
+      particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 20 + Math.random() * 50;
+      const tx = Math.cos(angle) * (40 + Math.random() * 60);
+      const ty = Math.sin(angle) * (40 + Math.random() * 60) - 40;
+      particle.style.cssText = `
+        position: fixed; font-size: 1.3rem; pointer-events: none; z-index: 10000;
+        left: ${cx + Math.cos(angle) * dist}px;
+        top: ${cy + Math.sin(angle) * dist}px;
+        animation: particle-pop 0.75s ease-out forwards;
+        --tx: ${tx}px;
+        --ty: ${ty}px;
+      `;
+      document.body.appendChild(particle);
+      particle.addEventListener('animationend', () => particle.remove());
+    }, i * 40);
+  }
+});
+
+// Inject particle keyframes
+const particleStyle = document.createElement('style');
+particleStyle.textContent = `
+  @keyframes particle-pop {
+    0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translate(var(--tx, 60px), -80px) scale(0.3) rotate(40deg); }
+  }
+`;
+document.head.appendChild(particleStyle);
+
+// ===== TOC —— scroll spy =====
+const tocLinks = document.querySelectorAll('.toc-item');
+const headingIds = Array.from(tocLinks).map(link => link.getAttribute('href').replace('#', ''));
+
+function updateToc() {
+  let currentId = null;
+  const scrollTop = window.scrollY + 120; // offset for sticky sidebar
+
+  // Find the last heading that's above the current scroll position
+  for (const id of headingIds) {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top + window.scrollY <= scrollTop) {
+      currentId = id;
+    }
+  }
+
+  tocLinks.forEach(link => {
+    const href = link.getAttribute('href').replace('#', '');
+    if (href === currentId) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', updateToc);
+updateToc(); // initial call
+
+// Smooth scroll for TOC links
+tocLinks.forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const id = this.getAttribute('href').replace('#', '');
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Manually set active immediately for responsiveness
+      tocLinks.forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+    }
+  });
+});
+
+console.log('🌱 数字花园 v2 预览 — 三栏布局：左侧身份+导航 | 中间宽文章 | 右侧大纲');
+</script>
+</body>
+</html>

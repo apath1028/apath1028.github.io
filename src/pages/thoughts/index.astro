@@ -3,26 +3,22 @@ import Layout from "../../components/Layout.astro";
 import ThoughtTimeline from "../../components/ThoughtTimeline.astro";
 import { fetchMemosV1 } from "../../lib/memos";
 
-// 从 Memos API 获取动态数据
-// 如果 Memos 服务不可用，会自动使用模拟数据
 const memosHost = import.meta.env.PUBLIC_MEMOS_HOST || "http://localhost:5230";
 const memos = await fetchMemosV1(memosHost);
 ---
 
 <Layout title="动态 — 数字花园" description="日常想法与碎碎念">
   <div class="container">
-    <header class="page-header">
+    <header class="page-header reveal">
       <h1>动态</h1>
       <p class="page-desc">日常想法、灵感和碎碎念</p>
     </header>
 
-    <section class="thoughts-section">
+    <section>
       {memos.length > 0 ? (
         <ThoughtTimeline memos={memos} />
       ) : (
-        <div class="empty-state">
-          <p>暂无动态</p>
-        </div>
+        <div class="empty-state"><p>暂无动态</p></div>
       )}
     </section>
   </div>
@@ -34,25 +30,14 @@ const memos = await fetchMemosV1(memosHost);
   }
 
   .page-header h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
   }
 
   .page-desc {
-    color: var(--text-tertiary);
+    color: var(--text-muted);
     font-size: 0.9rem;
-  }
-
-  .thoughts-section {
-    min-height: 300px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: var(--text-tertiary);
-    border: 1px dashed var(--border-primary);
-    border-radius: 8px;
   }
 </style>

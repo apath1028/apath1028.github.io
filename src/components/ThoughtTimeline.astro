@@ -28,8 +28,6 @@ function formatDate(ts: number): string {
   });
 }
 
-// 将 Memos 的 Markdown 内容渲染为简单的 HTML
-// （以处理纯文本和基本格式为主）
 function renderContent(content: string): string {
   return content
     .replace(/&/g, "&amp;")
@@ -37,47 +35,60 @@ function renderContent(content: string): string {
     .replace(/>/g, "&gt;")
     .replace(/\n/g, "<br>");
 }
+
+const dotColors = ["", "warm", "teal", "sky", "rose"];
+const delays = ["", "reveal-delay-1", "reveal-delay-2", "reveal-delay-3", "reveal-delay-4"];
 ---
 
 <div class="timeline">
-  {memos.map((memo, index) => (
-    <div class="timeline-item">
-      <div class="timeline-dot" />
-      <div class={`timeline-card ${memo.pinned ? "pinned" : ""}`}>
-        <div class="timeline-content">
-          {memo.pinned && <span class="pin-badge">📌 置顶</span>}
-          <p class="timeline-text" set:html={renderContent(memo.content)} />
-        </div>
-        <div class="timeline-footer">
-          <time class="timeline-time">{formatDate(memo.createdTs)}</time>
-          {memo.tags && memo.tags.length > 0 && (
-            <div class="timeline-tags">
-              {memo.tags.map((tag) => (
-                <span class="timeline-tag">{tag}</span>
-              ))}
-            </div>
-          )}
+  {memos.map((memo, index) => {
+    const dotColor = memo.pinned ? "warm" : dotColors[index % dotColors.length];
+    const delay = index < delays.length ? delays[index] : "";
+    return (
+      <div class={`timeline-item reveal ${delay}`}>
+        <div class={`timeline-dot ${dotColor}`} />
+        <div class={`timeline-card ${memo.pinned ? "pinned" : ""}`}>
+          <div class="timeline-content">
+            {memo.pinned && <span class="pin-badge">📌 置顶</span>}
+            <p class="timeline-text" set:html={renderContent(memo.content)} />
+          </div>
+          <div class="timeline-footer">
+            <time class="timeline-time">{formatDate(memo.createdTs)}</time>
+            {memo.tags && memo.tags.length > 0 && (
+              <div class="timeline-tags">
+                {memo.tags.map((tag) => (
+                  <span class="timeline-tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  ))}
+    );
+  })}
 </div>
 
 <style>
   .timeline {
     position: relative;
-    padding-left: 2rem;
+    padding-left: 2.2rem;
   }
 
-  /* 时间轴线 */
   .timeline::before {
     content: "";
     position: absolute;
-    left: 0.45rem;
+    left: 0.5rem;
     top: 0;
     bottom: 0;
     width: 2px;
-    background: var(--border-primary);
+    background: linear-gradient(
+      180deg,
+      var(--accent),
+      var(--border),
+      var(--warm),
+      var(--border),
+      transparent
+    );
   }
 
   .timeline-item {
@@ -87,52 +98,97 @@ function renderContent(content: string): string {
 
   .timeline-dot {
     position: absolute;
-    left: -2rem;
-    top: 0.6rem;
-    width: 0.9rem;
-    height: 0.9rem;
+    left: -2.2rem;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--accent);
-    border: 2px solid var(--bg-primary);
+    border: 2px solid var(--bg-base);
+    box-shadow: 0 0 10px var(--accent-glow);
     z-index: 1;
+    transition: all 0.35s var(--ease-out);
+  }
+
+  .timeline-item:hover .timeline-dot {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+  }
+
+  .timeline-dot.warm {
+    background: var(--warm);
+    box-shadow: 0 0 10px var(--warm-glow);
+  }
+
+  .timeline-item:hover .timeline-dot.warm {
+    box-shadow: 0 0 20px var(--warm-glow), 0 0 40px var(--warm-glow);
+  }
+
+  .timeline-dot.sky {
+    background: var(--sky);
+    box-shadow: 0 0 10px var(--sky-glow);
+  }
+
+  .timeline-item:hover .timeline-dot.sky {
+    box-shadow: 0 0 20px var(--sky-glow), 0 0 40px var(--sky-glow);
+  }
+
+  .timeline-dot.rose {
+    background: var(--rose);
+    box-shadow: 0 0 10px var(--rose-glow);
+  }
+
+  .timeline-item:hover .timeline-dot.rose {
+    box-shadow: 0 0 20px var(--rose-glow), 0 0 40px var(--rose-glow);
+  }
+
+  .timeline-dot.teal {
+    background: var(--teal);
+    box-shadow: 0 0 10px var(--teal-glow);
+  }
+
+  .timeline-item:hover .timeline-dot.teal {
+    box-shadow: 0 0 20px var(--teal-glow), 0 0 40px var(--teal-glow);
   }
 
   .timeline-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    transition: all 0.2s;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    transition: all 0.35s var(--ease-out);
+    position: relative;
   }
 
   .timeline-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 2px 8px rgba(88, 166, 255, 0.08);
+    border-color: rgba(167, 139, 250, 0.25);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    transform: translateX(6px);
   }
 
   .timeline-card.pinned {
-    border-color: var(--orange);
+    border-color: rgba(245, 158, 11, 0.3);
     background: linear-gradient(
       135deg,
-      rgba(210, 153, 34, 0.05),
+      rgba(245, 158, 11, 0.05),
       transparent
     );
   }
 
   .timeline-content {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.4rem;
   }
 
   .pin-badge {
     display: inline-block;
     font-size: 0.75rem;
-    color: var(--orange);
-    margin-bottom: 0.4rem;
+    color: var(--warm);
+    margin-bottom: 0.3rem;
   }
 
   .timeline-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
+    font-size: 0.93rem;
+    line-height: 1.75;
     color: var(--text-secondary);
     word-break: break-word;
   }
@@ -142,9 +198,9 @@ function renderContent(content: string): string {
   }
 
   .timeline-text :global(code) {
-    background: var(--inline-code-bg);
+    background: var(--accent-soft);
     padding: 0.1em 0.3em;
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: 0.85em;
   }
 
@@ -152,13 +208,14 @@ function renderContent(content: string): string {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 0.7rem;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
 
   .timeline-time {
-    font-size: 0.75rem;
-    color: var(--text-tertiary);
+    font-size: 0.72rem;
+    color: var(--text-muted);
   }
 
   .timeline-tags {
@@ -168,10 +225,22 @@ function renderContent(content: string): string {
   }
 
   .timeline-tag {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 8px;
-    background: var(--bg-tertiary);
-    color: var(--text-tertiary);
+    font-size: 0.68rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .timeline-card:hover .timeline-tag {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .timeline-card:hover {
+      transform: translateX(3px);
+    }
   }
 </style>

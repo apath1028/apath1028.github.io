@@ -3,60 +3,127 @@ import Layout from "../components/Layout.astro";
 ---
 
 <Layout title="关于 — 数字花园" description="关于我">
-  <div class="container">
-    <article class="about">
-      <header class="about-header">
-        <div class="avatar">🌱</div>
-        <h1>关于我</h1>
-      </header>
+  <div class="about reveal">
+    <header class="about-header">
+      <div class="about-avatar" id="aboutAvatar">🌱</div>
+      <h1>关于我</h1>
+      <p>一个喜欢记录的人</p>
+    </header>
 
       <div class="prose">
+        <p>你好！欢迎来到我的数字花园。</p>
         <p>
-          你好！欢迎来到我的数字花园。
-        </p>
-
-        <p>
-          这是一个用 <strong>Astro</strong> 构建的个人网站，托管在 GitHub Pages 上。
-          这里记录着我的技术学习、项目经验、生活感悟和日常碎碎念。
+          这是一个用 <strong>Astro</strong> 构建的个人网站，托管在 GitHub Pages
+          上。这里记录着我的技术学习、项目经验和日常碎碎念。
         </p>
 
         <h2>关于这个网站</h2>
         <p>
-          这个网站是我的「数字花园」—— 一个持续生长、不断更新的个人知识空间。
-          不同于传统的博客，数字花园更强调知识的连接和演化。
+          不像传统博客那样追求完美的"最终稿"，数字花园更像是一个持续生长的知识空间。每一篇文章都是活的——会随着我的理解加深而不断更新和演化。
         </p>
 
-        <h2>联系我</h2>
+        <p>核心设计理念：</p>
         <ul>
-          <li>📧 Email: your-email@example.com</li>
-          <li>🐙 GitHub: <a href="https://github.com/shucheng">@shucheng</a></li>
-          <li>🐦 Twitter: <a href="#">@username</a></li>
+          <li>
+            📝 <strong>长文章</strong> — 通过 Markdown 文件管理，版本控制在 Git
+            中，确保数据的完全掌控
+          </li>
+          <li>
+            💭 <strong>短动态</strong> — 通过 Memos
+            随时随地发布，像发朋友圈一样简单，无需提交代码
+          </li>
+          <li>
+            🎨 <strong>深色主题</strong> — 柔和的暗色背景 +
+            紫色点缀，让阅读和写作都更舒适
+          </li>
+          <li>
+            🔗 <strong>知识连接</strong> — 文章之间通过标签和引用形成网络，而非孤立存在
+          </li>
         </ul>
       </div>
-    </article>
-  </div>
+
+      <div class="social-links">
+        <a href="mailto:apathwsc@foxmail.com" class="social-link reveal reveal-delay-1">📧 Email</a>
+        <a href="https://github.com/apath1028" class="social-link reveal reveal-delay-2" target="_blank" rel="noopener">🐙 GitHub</a>
+        <a href="#" class="social-link reveal reveal-delay-3">🐦 Twitter</a>
+        <a href="/rss.xml" class="social-link reveal reveal-delay-4">📡 RSS</a>
+      </div>
+    </div>
 </Layout>
 
 <style>
   .about {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 1rem;
+    max-width: 800px;
   }
 
   .about-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
   }
 
-  .avatar {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    line-height: 1;
+  .about-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--teal));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+    box-shadow: 0 0 30px var(--accent-glow);
+    animation: float 4s ease-in-out infinite;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+  }
+
+  .about-avatar:hover {
+    box-shadow: 0 0 50px var(--accent-glow);
+    transform: scale(1.05);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 
   .about-header h1 {
     font-size: 1.8rem;
     font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .about-header p {
+    color: var(--text-muted);
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: all 0.3s var(--ease-spring);
+    text-decoration: none;
+  }
+
+  .social-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
   }
 </style>

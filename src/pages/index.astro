@@ -16,174 +16,149 @@ const memos = await fetchMemosV1(memosHost);
 const latestMemos = memos.slice(0, 4);
 ---
 
-<Layout title="数字花园" description="个人博客与数字花园">
-  <div class="container">
-    <!-- Hero -->
-    <section class="hero">
-      <h1 class="hero-title">数字花园</h1>
-      <p class="hero-desc">
-        记录知识、思考与日常。欢迎来访 🌱
-      </p>
-      <div class="hero-links">
-        <a href="/blog" class="btn btn-primary">浏览文章</a>
-        <a href="/about" class="btn btn-secondary">关于我</a>
-      </div>
-    </section>
+<Layout title="数字花园" description="个人博客与数字花园 — 记录知识、思考与日常">
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="hero-emoji">🌱</div>
+    <h1 class="hero-title">Apath's daily</h1>
+    <p class="hero-desc">记录知识、思考与日常。一个持续生长的个人知识空间。</p>
+    <div class="hero-btns">
+      <a href="/blog" class="btn btn-primary">✨ Articles</a>
+      <a href="/about" class="btn btn-ghost">About</a>
+    </div>
+  </section>
 
-    <!-- Latest Posts -->
-    <section class="section">
-      <div class="section-header">
-        <h2>最新文章</h2>
-        <a href="/blog" class="section-more">查看全部 →</a>
+  <!-- Latest Posts -->
+  <section class="section container">
+    <div class="section-header reveal">
+      <h2><span class="dot purple"></span>Latest Article</h2>
+      <a href="/blog" class="section-more">Show more <span class="arrow">→</span></a>
+    </div>
+    {latestPosts.length > 0 ? (
+      <div class="blog-list">
+        {latestPosts.map((post) => <BlogCard post={post} />)}
       </div>
-      {latestPosts.length > 0 ? (
-        <div class="section-content">
-          {latestPosts.map((post) => <BlogCard post={post} />)}
-        </div>
-      ) : (
-        <div class="empty-state">
-          <p>还没有文章，敬请期待</p>
-        </div>
-      )}
-    </section>
+    ) : (
+      <div class="empty-state"><p>还没有文章，敬请期待 🌱</p></div>
+    )}
+  </section>
 
-    <!-- Latest Thoughts -->
-    <section class="section">
-      <div class="section-header">
-        <h2>最近动态</h2>
-        <a href="/thoughts" class="section-more">查看全部 →</a>
-      </div>
-      {latestMemos.length > 0 ? (
-        <div class="section-content">
-          <ThoughtTimeline memos={latestMemos} />
-        </div>
-      ) : (
-        <div class="empty-state">
-          <p>暂无动态</p>
-        </div>
-      )}
-    </section>
-  </div>
+  <!-- Latest Thoughts -->
+  <section class="section container">
+    <div class="section-header reveal">
+      <h2><span class="dot warm"></span>Resent Moments</h2>
+      <a href="/thoughts" class="section-more">Show more <span class="arrow">→</span></a>
+    </div>
+    {latestMemos.length > 0 ? (
+      <ThoughtTimeline memos={latestMemos} />
+    ) : (
+      <div class="empty-state"><p>暂无动态</p></div>
+    )}
+  </section>
 </Layout>
 
 <style>
   .hero {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 4rem 1rem 5rem;
+    position: relative;
+  }
+
+  .hero-emoji {
+    font-size: 4rem;
     margin-bottom: 1rem;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-12px) rotate(3deg); }
+    66% { transform: translateY(-4px) rotate(-3deg); }
+  }
+
+  @keyframes float-fast {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-18px) scale(1.15); }
   }
 
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 1rem;
-    background: linear-gradient(
-      135deg,
-      var(--accent),
-      var(--purple)
-    );
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #c4b5fd 0%, #7dd3fc 40%, #a78bfa 70%, #c4b5fd 100%);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    margin-bottom: 0.75rem;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 
   .hero-desc {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text-secondary);
-    margin-bottom: 2rem;
     max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 2rem;
   }
 
-  .hero-links {
+  .hero-btns {
     display: flex;
-    justify-content: center;
     gap: 0.75rem;
+    justify-content: center;
     flex-wrap: wrap;
   }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.6rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-
-  .btn:hover {
-    text-decoration: none;
-    transform: translateY(-1px);
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
-  }
-
-  .btn-secondary {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-primary);
-  }
-
-  .btn-secondary:hover {
-    background: var(--border-primary);
-  }
-
   .section {
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
   }
 
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-primary);
-  }
-
-  .section-header h2 {
-    font-size: 1.3rem;
-    font-weight: 600;
-  }
-
-  .section-more {
-    font-size: 0.85rem;
-    color: var(--text-tertiary);
-  }
-
-  .section-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-tertiary);
-    border: 1px dashed var(--border-primary);
-    border-radius: 8px;
+  .blog-list {
+    display: grid;
+    gap: 1rem;
   }
 
   @media (max-width: 640px) {
     .hero-title {
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
-
     .hero-desc {
       font-size: 1rem;
     }
+  }
+</style>
+
+<script>
+  const emoji = document.querySelector(".hero-emoji");
+  const emojis = ["🌱", "🌸", "🌿", "🪴", "🌻", "🌷", "🍀", "🌾", "💐", "🌺"];
+  let count = 0;
+  if (emoji) {
+    emoji.addEventListener("click", function () {
+      count++;
+      this.textContent = emojis[count % emojis.length];
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const p = document.createElement("span");
+          p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          p.style.cssText = `position:absolute;font-size:1.5rem;pointer-events:none;z-index:10;left:${50+(Math.random()-0.5)*30}%;top:${40+(Math.random()-0.5)*20}%;animation:particle-up .8s ease-out forwards;`;
+          this.parentElement!.appendChild(p);
+          p.addEventListener("animationend", () => p.remove());
+        }, i * 60);
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  @keyframes particle-up {
+    0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.3) rotate(40deg); }
   }
 </style>
