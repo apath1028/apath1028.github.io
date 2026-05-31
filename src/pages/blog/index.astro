@@ -1,0 +1,65 @@
+---
+import Layout from "../../components/Layout.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("blog");
+const publishedPosts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// 收集所有标签
+const allTags = [
+  ...new Set(publishedPosts.flatMap((post) => post.data.tags || [])),
+];
+---
+
+<Layout title="文章 — 数字花园" description="博客文章列表">
+  <div class="container">
+    <header class="page-header">
+      <h1>文章</h1>
+      <p class="page-desc">所有文章 ({publishedPosts.length} 篇)</p>
+    </header>
+
+    <section class="blog-list">
+      {publishedPosts.length > 0 ? (
+        publishedPosts.map((post) => <BlogCard post={post} />)
+      ) : (
+        <div class="empty-state">
+          <p>还没有文章，敬请期待</p>
+        </div>
+      )}
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .page-desc {
+    color: var(--text-tertiary);
+    font-size: 0.9rem;
+  }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-tertiary);
+    border: 1px dashed var(--border-primary);
+    border-radius: 8px;
+  }
+</style>

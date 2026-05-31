@@ -1,0 +1,189 @@
+---
+import Layout from "../components/Layout.astro";
+import BlogCard from "../components/BlogCard.astro";
+import ThoughtTimeline from "../components/ThoughtTimeline.astro";
+import { getCollection } from "astro:content";
+import { fetchMemosV1 } from "../lib/memos";
+
+const allPosts = await getCollection("blog");
+const latestPosts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+const memosHost = import.meta.env.PUBLIC_MEMOS_HOST || "http://localhost:5230";
+const memos = await fetchMemosV1(memosHost);
+const latestMemos = memos.slice(0, 4);
+---
+
+<Layout title="数字花园" description="个人博客与数字花园">
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">数字花园</h1>
+      <p class="hero-desc">
+        记录知识、思考与日常。欢迎来访 🌱
+      </p>
+      <div class="hero-links">
+        <a href="/blog" class="btn btn-primary">浏览文章</a>
+        <a href="/about" class="btn btn-secondary">关于我</a>
+      </div>
+    </section>
+
+    <!-- Latest Posts -->
+    <section class="section">
+      <div class="section-header">
+        <h2>最新文章</h2>
+        <a href="/blog" class="section-more">查看全部 →</a>
+      </div>
+      {latestPosts.length > 0 ? (
+        <div class="section-content">
+          {latestPosts.map((post) => <BlogCard post={post} />)}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>还没有文章，敬请期待</p>
+        </div>
+      )}
+    </section>
+
+    <!-- Latest Thoughts -->
+    <section class="section">
+      <div class="section-header">
+        <h2>最近动态</h2>
+        <a href="/thoughts" class="section-more">查看全部 →</a>
+      </div>
+      {latestMemos.length > 0 ? (
+        <div class="section-content">
+          <ThoughtTimeline memos={latestMemos} />
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>暂无动态</p>
+        </div>
+      )}
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      var(--purple)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn:hover {
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+  }
+
+  .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--border-primary);
+  }
+
+  .section {
+    margin-bottom: 3rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .section-header h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .section-more {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+  }
+
+  .section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-tertiary);
+    border: 1px dashed var(--border-primary);
+    border-radius: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 1.8rem;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+    }
+  }
+</style>

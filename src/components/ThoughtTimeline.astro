@@ -1,0 +1,177 @@
+---
+export interface Props {
+  memos: Array<{
+    id: number;
+    content: string;
+    createdTs: number;
+    tags?: string[];
+    pinned?: boolean;
+  }>;
+}
+
+const { memos } = Astro.props;
+
+function formatDate(ts: number): string {
+  const date = new Date(ts * 1000);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  if (diffHours < 1) return "刚刚";
+  if (diffHours < 24) return `${diffHours} 小时前`;
+  if (diffHours < 48) return "昨天";
+
+  return date.toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+// 将 Memos 的 Markdown 内容渲染为简单的 HTML
+// （以处理纯文本和基本格式为主）
+function renderContent(content: string): string {
+  return content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+}
+---
+
+<div class="timeline">
+  {memos.map((memo, index) => (
+    <div class="timeline-item">
+      <div class="timeline-dot" />
+      <div class={`timeline-card ${memo.pinned ? "pinned" : ""}`}>
+        <div class="timeline-content">
+          {memo.pinned && <span class="pin-badge">📌 置顶</span>}
+          <p class="timeline-text" set:html={renderContent(memo.content)} />
+        </div>
+        <div class="timeline-footer">
+          <time class="timeline-time">{formatDate(memo.createdTs)}</time>
+          {memo.tags && memo.tags.length > 0 && (
+            <div class="timeline-tags">
+              {memo.tags.map((tag) => (
+                <span class="timeline-tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  /* 时间轴线 */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 0.45rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-primary);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -2rem;
+    top: 0.6rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-primary);
+    z-index: 1;
+  }
+
+  .timeline-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    transition: all 0.2s;
+  }
+
+  .timeline-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(88, 166, 255, 0.08);
+  }
+
+  .timeline-card.pinned {
+    border-color: var(--orange);
+    background: linear-gradient(
+      135deg,
+      rgba(210, 153, 34, 0.05),
+      transparent
+    );
+  }
+
+  .timeline-content {
+    margin-bottom: 0.75rem;
+  }
+
+  .pin-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--orange);
+    margin-bottom: 0.4rem;
+  }
+
+  .timeline-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    word-break: break-word;
+  }
+
+  .timeline-text :global(a) {
+    color: var(--accent);
+  }
+
+  .timeline-text :global(code) {
+    background: var(--inline-code-bg);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    font-size: 0.85em;
+  }
+
+  .timeline-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .timeline-time {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .timeline-tags {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .timeline-tag {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+  }
+</style>

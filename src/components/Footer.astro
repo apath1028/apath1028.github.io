@@ -1,0 +1,39 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <p>&copy; {currentYear} 数字花园</p>
+      <p class="footer-desc">
+        用 ❤️ 和 Astro 构建 &middot; 托管于 GitHub Pages
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border-primary);
+    padding: 2rem 0;
+    margin-top: 4rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .footer p {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+  }
+
+  .footer-desc {
+    font-size: 0.8rem;
+  }
+</style>

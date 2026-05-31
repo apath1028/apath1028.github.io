@@ -1,0 +1,117 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title = "数字花园" } = Astro.props;
+---
+
+<header class="header">
+  <div class="header-inner container">
+    <a href="/" class="logo">{title}</a>
+    <nav class="nav">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/blog" class="nav-link">文章</a>
+      <a href="/thoughts" class="nav-link">动态</a>
+      <a href="/about" class="nav-link">关于</a>
+    </nav>
+    <button class="menu-btn" aria-label="菜单" id="menu-toggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    backdrop-filter: blur(12px);
+    height: var(--header-height);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .logo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .logo:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    text-decoration: none;
+  }
+
+  .menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.4rem;
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      display: none;
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-primary);
+      padding: 0.5rem;
+    }
+
+    .nav.open {
+      display: flex;
+    }
+
+    .menu-btn {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.querySelector(".nav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
+  }
+</script>
