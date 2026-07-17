@@ -14,6 +14,10 @@ function isActive(path: string): string {
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-card">
+    <a class="resume-return" href="/" title="Return to resume">
+      <span aria-hidden="true">←</span> cv
+    </a>
+
     <!-- Avatar -->
     <div class="sidebar-avatar" id="sidebarAvatar">🌱</div>
 
@@ -28,17 +32,17 @@ function isActive(path: string): string {
 
     <!-- Vertical Nav -->
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="/" class={`sidebar-nav-link ${isActive("/")}`}>
-        <span class="nav-icon">🏠</span> 首页
+      <a href="/garden" class={`sidebar-nav-link ${isActive("/garden")}`}>
+        <span class="nav-icon">🏠</span> Blog Home
       </a>
       <a href="/blog" class={`sidebar-nav-link ${isActive("/blog")}`}>
-        <span class="nav-icon">📝</span> 文章
+        <span class="nav-icon">📝</span> Passage
       </a>
       <a href="/thoughts" class={`sidebar-nav-link ${isActive("/thoughts")}`}>
-        <span class="nav-icon">💭</span> 动态
+        <span class="nav-icon">💭</span> Thoughts
       </a>
       <a href="/about" class={`sidebar-nav-link ${isActive("/about")}`}>
-        <span class="nav-icon">🙋</span> 关于
+        <span class="nav-icon">🙋</span> About
       </a>
     </nav>
 
@@ -74,6 +78,22 @@ function isActive(path: string): string {
     text-align: center;
     flex: 1;
     transition: border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+  }
+
+  .resume-return {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1;
+  }
+
+  .resume-return:hover {
+    color: var(--accent);
+    text-decoration: none;
   }
 
   .sidebar-card:hover {
@@ -221,6 +241,12 @@ function isActive(path: string): string {
       gap: 0.5rem;
       padding: 1rem;
       border-radius: var(--radius-lg);
+    }
+
+    .resume-return {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 0.25rem;
     }
 
     .sidebar-avatar {

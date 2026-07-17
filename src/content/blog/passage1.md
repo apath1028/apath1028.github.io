@@ -2,6 +2,7 @@
 title: passage1
 description: ""
 date: 2025-05-31
+category: "生活"
 tags: ["杂谈"]
 ---
 

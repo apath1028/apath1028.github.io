@@ -2,6 +2,7 @@
 title: "你好，世界"
 description: "这是我的第一篇文章，欢迎来到数字花园"
 date: 2025-01-01
+category: "随笔"
 tags: ["随笔", "开篇"]
 ---
 
