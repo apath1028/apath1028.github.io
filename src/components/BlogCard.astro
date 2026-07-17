@@ -8,32 +8,41 @@ export interface Props {
 
 const { post } = Astro.props;
 const slug = post.id.replace(/\.mdx?$/, "");
-const { title, description, date, tags } = post.data;
+const { title, description, date, category, tags, cover, coverAlt } = post.data;
 ---
 
 <article class="blog-card reveal reveal-delay-1">
   <a href={`/blog/${slug}`} class="blog-card-link">
-    <span class="blog-card-date">
-      {date.toLocaleDateString("zh-CN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
-    </span>
-    <h3 class="blog-card-title">{title}</h3>
-    {description && <p class="blog-card-desc">{description}</p>}
-    {tags && tags.length > 0 && (
-      <div class="blog-card-tags">
-        {tags.map((tag) => <span class={`tag ${getTagClass(tag)}`}>{tag}</span>)}
+    {cover && (
+      <div class="blog-card-cover">
+        <img src={cover} alt={coverAlt || title} loading="lazy" />
       </div>
     )}
+    <div class="blog-card-body">
+      <div class="blog-card-meta">
+        <time datetime={date.toISOString()}>
+          {date.toLocaleDateString("zh-CN", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </time>
+        {category && <span class="blog-card-category">{category}</span>}
+      </div>
+      <h3 class="blog-card-title">{title}</h3>
+      {description && <p class="blog-card-desc">{description}</p>}
+      {tags && tags.length > 0 && (
+        <div class="blog-card-tags">
+          {tags.map((tag) => <span class={`tag ${getTagClass(tag)}`}>{tag}</span>)}
+        </div>
+      )}
+    </div>
   </a>
 </article>
 
 <style>
   .blog-card {
     display: block;
-    padding: 1.5rem;
     background: var(--bg-surface);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
@@ -95,16 +104,48 @@ const { title, description, date, tags } = post.data;
     z-index: 1;
   }
 
+  .blog-card-cover {
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--bg-elevated);
+  }
+
+  .blog-card-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .blog-card:hover .blog-card-cover img {
+    transform: scale(1.03);
+  }
+
+  .blog-card-body {
+    padding: 1.5rem;
+  }
+
   .blog-card-link:hover {
     text-decoration: none;
   }
 
-  .blog-card-date {
-    display: block;
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
     font-size: 0.78rem;
     color: var(--text-muted);
     margin-bottom: 0.35rem;
     font-variant-numeric: tabular-nums;
+  }
+
+  .blog-card-category {
+    color: var(--teal);
+    font-weight: 600;
   }
 
   .blog-card-title {

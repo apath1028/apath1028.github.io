@@ -141,7 +141,11 @@ import Layout from "../components/Layout.astro";
 title: "文章标题"
 description: "简短描述（会显示在文章列表卡片上）"
 date: 2025-06-01
+updatedDate: 2025-06-08
+category: "技术"
 tags: ["Python", "教程"]
+cover: "/images/my-post-cover.jpg"
+coverAlt: "文章封面内容说明"
 draft: false
 ---
 
@@ -161,7 +165,9 @@ def hello():
 ```
 
 - `draft: true` 的文章不会出现在列表中（草稿模式）
-- `tags` 可选，用于分类
+- `updatedDate`、`category`、`cover` 和 `coverAlt` 都是可选字段，`category` 表示单个文章分类
+- 封面图片可以放在 `public/images/`，字段中使用 `/images/文件名.jpg`
+- `tags` 可选，用于添加多个标签和列表筛选
 - 支持 `.md` 和 `.mdx` 两种格式
 
 ### 文章中的代码和公式

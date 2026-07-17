@@ -1,0 +1,160 @@
+---
+import Layout from "../components/Layout.astro";
+import BlogCard from "../components/BlogCard.astro";
+import ThoughtTimeline from "../components/ThoughtTimeline.astro";
+import { getCollection } from "astro:content";
+import { fetchMemosV1 } from "../lib/memos";
+
+const posts = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+const memosHost = import.meta.env.PUBLIC_MEMOS_HOST || "http://localhost:5230";
+const memos = (await fetchMemosV1(memosHost)).slice(0, 4);
+---
+
+<Layout title="Apath-Blog" description="A personal blog for tech notes, learning records and thoughts.">
+  <div class="container garden-page">
+    <header class="garden-hero reveal">
+      <div class="hero-emoji" aria-hidden="true">🌱</div>
+      <h1>Apath's daily</h1>
+      <p>记录知识、思考与日常。一个持续生长的个人知识空间。</p>
+      <div class="garden-links">
+        <a class="btn btn-primary" href="/blog">✨ Articles</a>
+        <a class="btn btn-ghost" href="/about">About</a>
+      </div>
+    </header>
+
+    <section class="garden-section">
+      <div class="section-header reveal">
+        <h2><span class="dot purple"></span>Latest Article</h2>
+        <a href="/blog" class="section-more">Show more <span class="arrow">→</span></a>
+      </div>
+      <div class="garden-posts">
+        {posts.map((post) => <BlogCard post={post} />)}
+      </div>
+    </section>
+
+    <section class="garden-section">
+      <div class="section-header reveal">
+        <h2><span class="dot warm"></span>Recent Moments</h2>
+        <a href="/thoughts" class="section-more">Show more <span class="arrow">→</span></a>
+      </div>
+      <ThoughtTimeline memos={memos} />
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .garden-page {
+    padding-top: 0;
+  }
+
+  .garden-hero {
+    position: relative;
+    padding: 4rem 1rem 5rem;
+    text-align: center;
+  }
+
+  .hero-emoji {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 4rem;
+    animation: float 3s ease-in-out infinite;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-12px) rotate(3deg); }
+    66% { transform: translateY(-4px) rotate(-3deg); }
+  }
+
+  .garden-hero h1 {
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #c4b5fd 0%, #7dd3fc 40%, #a78bfa 70%, #c4b5fd 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .garden-hero > p {
+    max-width: 520px;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+  }
+
+  .garden-hero > p:not(.eyebrow) {
+    color: var(--text-secondary);
+  }
+
+  .garden-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .garden-section {
+    margin-bottom: 4rem;
+  }
+
+  .garden-posts {
+    display: grid;
+    gap: 1rem;
+  }
+</style>
+
+<script>
+  const emoji = document.querySelector(".hero-emoji");
+  const emojis = ["🌱", "🌸", "🌿", "🪴", "🌻", "🌷", "🍀", "🌾", "💐", "🌺"];
+  let count = 0;
+
+  if (emoji) {
+    emoji.addEventListener("click", function () {
+      count++;
+      this.textContent = emojis[count % emojis.length];
+
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const particle = document.createElement("span");
+          particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          particle.className = "garden-particle";
+          particle.style.left = `${50 + (Math.random() - 0.5) * 30}%`;
+          particle.style.top = `${40 + (Math.random() - 0.5) * 20}%`;
+          this.parentElement?.appendChild(particle);
+          particle.addEventListener("animationend", () => particle.remove());
+        }, i * 60);
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  @keyframes garden-particle-up {
+    0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.3) rotate(40deg); }
+  }
+
+  .garden-particle {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    font-size: 1.5rem;
+    animation: garden-particle-up 0.8s ease-out forwards;
+  }
+</style>

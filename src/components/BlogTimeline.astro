@@ -20,7 +20,7 @@ const delays = [
 <div class="bt-timeline">
   {posts.map((post, index) => {
     const slug = post.id.replace(/\.mdx?$/, "");
-    const { title, description, date, tags } = post.data;
+    const { title, description, date, category, tags } = post.data;
     const firstTag = tags?.[0] || "";
     const dotColor = getTagDotColor(firstTag);
     const delayClass = index < delays.length ? delays[index] : "";
@@ -29,17 +29,25 @@ const delays = [
       <div
         class={`bt-timeline-item reveal ${delayClass}`}
         data-tags={tags?.join(",") || ""}
+        data-category={category || ""}
+        data-search={[title, description, category, ...(tags || [])]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase("zh-CN")}
       >
         <div class={`bt-timeline-dot ${dotColor}`} />
         <article class="bt-timeline-card">
           <a href={`/blog/${slug}`} class="bt-timeline-link">
-            <time class="bt-timeline-date">
-              {date.toLocaleDateString("zh-CN", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </time>
+            <div class="bt-timeline-meta">
+              <time class="bt-timeline-date">
+                {date.toLocaleDateString("zh-CN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+              {category && <span>{category}</span>}
+            </div>
             <h3 class="bt-timeline-title">{title}</h3>
             {description && (
               <p class="bt-timeline-desc">{description}</p>
@@ -168,11 +176,25 @@ const delays = [
 
   /* ===== Content ===== */
   .bt-timeline-date {
-    display: block;
+    display: inline;
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-bottom: 0.25rem;
     font-variant-numeric: tabular-nums;
+  }
+
+  .bt-timeline-meta {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .bt-timeline-meta span {
+    color: var(--teal);
+    font-weight: 600;
   }
 
   .bt-timeline-title {

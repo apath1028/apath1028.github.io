@@ -9,13 +9,21 @@ export interface Props {
   image?: string;
   /** Show the right TOC sidebar (article pages) */
   toc?: boolean;
+  /** Show the blog navigation sidebar */
+  sidebar?: boolean;
 }
 
 const {
   title = "数字花园",
   description = "个人博客与数字花园 — 记录知识、思考与日常",
+  image,
   toc = false,
+  sidebar = true,
 } = Astro.props;
+
+const socialImage = image
+  ? new URL(image, Astro.site ?? Astro.url).toString()
+  : undefined;
 ---
 
 <!DOCTYPE html>
@@ -30,6 +38,7 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    {socialImage && <meta property="og:image" content={socialImage} />}
 
     <!-- KaTeX -->
     <link
@@ -43,7 +52,7 @@ const {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <slot name="head" />
   </head>
-  <body>
+  <body class:list={[{ "resume-theme": !sidebar }]}>
     <!-- Ambient background orbs -->
     <div class="bg-orbs">
       <div class="bg-orb bg-orb--1" data-parallax="0.03"></div>
@@ -55,10 +64,13 @@ const {
     <div class="cursor-glow" id="cursorGlow"></div>
 
     <!-- Left sidebar (fixed position, outside grid flow) -->
-    <Sidebar />
+    {sidebar && <Sidebar />}
 
     <!-- Content area with optional TOC -->
-    <div class="page-shell" class:list={[{ "page-shell--toc": toc }]}>
+    <div
+      class="page-shell"
+      class:list={[{ "page-shell--toc": toc, "page-shell--no-sidebar": !sidebar }]}
+    >
       <main class="content-area">
         <slot />
         <Footer />

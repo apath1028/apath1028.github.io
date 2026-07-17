@@ -1,164 +1,402 @@
 ---
+// 全站公共布局。sidebar={false} 表示简历首页不显示博客的深色侧边栏。
 import Layout from "../components/Layout.astro";
-import BlogCard from "../components/BlogCard.astro";
-import ThoughtTimeline from "../components/ThoughtTimeline.astro";
-import { getCollection } from "astro:content";
-import { fetchMemosV1 } from "../lib/memos";
-
-const allPosts = await getCollection("blog");
-const latestPosts = allPosts
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 5);
-
-const memosHost = import.meta.env.PUBLIC_MEMOS_HOST || "http://localhost:5230";
-const memos = await fetchMemosV1(memosHost);
-const latestMemos = memos.slice(0, 4);
 ---
 
-<Layout title="数字花园" description="个人博客与数字花园 — 记录知识、思考与日常">
-  <!-- Hero -->
-  <section class="hero container">
-    <div class="hero-emoji">🌱</div>
-    <h1 class="hero-title">Apath's daily</h1>
-    <p class="hero-desc">记录知识、思考与日常。一个持续生长的个人知识空间。</p>
-    <div class="hero-btns">
-      <a href="/blog" class="btn btn-primary">✨ Articles</a>
-      <a href="/about" class="btn btn-ghost">About</a>
-    </div>
-  </section>
+<!--
+  简历主页根布局：
+  - title/description 用于浏览器标题和 SEO 描述。
+  - sidebar={false} 会启用白色简历主题，博客页面不受影响。
+-->
+<Layout title="Homepage" description="个人学术主页" sidebar={false}>
+  <!-- Font Awesome 提供地点、邮箱、GitHub 和 ORCID 图标。 -->
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  </Fragment>
+  
+  <!-- #top 是 Homepage/About Me 返回页面顶部时使用的锚点。 -->
+  <div class="academic-site" id="top">
+    <!-- 吸顶导航栏：页面滚动时始终固定在视口顶部。 -->
+    <header class="masthead">
+      <nav class="academic-nav" aria-label="Primary navigation">
+        <!-- href 必须与下方 section 的 id 对应；Card 单独跳转到博客首页。 -->
+        <a class="nav-home" href="#top">Homepage</a>
+        <a href="#top">About Me</a>
+        <a href="#educations">Educations</a>
+        <a href="#news">News</a>
+        <a href="#publications">Publications</a>
+        <a href="#internships">Internships</a>
+        <a href="#projects">Projects</a>
+        <a href="#honors-and-awards">Honors and Awards</a>
+        <a href="#societies">Societies</a>
+        <a href="/garden">Card</a>
+      </nav>
+    </header>
 
-  <!-- Latest Posts -->
-  <section class="section container">
-    <div class="section-header reveal">
-      <h2><span class="dot purple"></span>Latest Article</h2>
-      <a href="/blog" class="section-more">Show more <span class="arrow">→</span></a>
-    </div>
-    {latestPosts.length > 0 ? (
-      <div class="blog-list">
-        {latestPosts.map((post) => <BlogCard post={post} />)}
-      </div>
-    ) : (
-      <div class="empty-state"><p>还没有文章，敬请期待 🌱</p></div>
-    )}
-  </section>
+    <!-- 桌面端两列布局：左侧个人资料，右侧简历正文。 -->
+    <main class="academic-main">
+      <!-- 左侧个人资料栏。桌面端通过 CSS position: sticky 固定。 -->
+      <aside class="profile-column">
+        <!--
+          头像占位。替换图片时可改为：
+          <div class="profile-avatar"><img src="/images/profile/avatar.jpg" alt="Shucheng Wei" /></div>
+        -->
+        <div class="profile-avatar" aria-label="头像待补充">?</div>
+        <h2>Shucheng Wei 🤗</h2>
+        <p class="profile-school">Ocean University of China</p>
+        
+        <!-- 个人简介和联系方式；图标来自上方引入的 Font Awesome。 -->
+        <ul class="profile-links">
+          <li class="profile-bio">An undergraduate student at OUC, majoring in Telecommunication Engineering, with research interests in Computer Vision, Image Retrieval, and Artificial Intelligent.</li>
+          <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> QingDao, China</li>
+          <li><a href="mailto:scwei8888@163.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i> Email</a></li>
+          <li><a href="https://github.com/apath1028" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Github</a></li>
+          <li><a href="#"><i class="fa-brands fa-orcid" aria-hidden="true"></i> ORCID</a></li>
+        </ul>
+      </aside>
 
-  <!-- Latest Thoughts -->
-  <section class="section container">
-    <div class="section-header reveal">
-      <h2><span class="dot warm"></span>Resent Moments</h2>
-      <a href="/thoughts" class="section-more">Show more <span class="arrow">→</span></a>
-    </div>
-    {latestMemos.length > 0 ? (
-      <ThoughtTimeline memos={latestMemos} />
-    ) : (
-      <div class="empty-state"><p>暂无动态</p></div>
-    )}
-  </section>
+      <!-- 右侧主体。每个 section 的 id 都是顶部导航的滚动目标。 -->
+      <article class="academic-content">
+        <!-- 首页简介和 CV 下载入口。将 href 替换成 public 目录中的 PDF 路径。 -->
+        <section id="about-me" class="intro-section">
+          <p>个人简介待补充。这里放当前身份、学校、研究方向和所在实验室等介绍。</p>
+          <p>本科或上一段教育经历介绍待补充。</p>
+          <a class="cv-link" href="#">Download CV 📑</a>
+        </section>
+
+        <!-- 教育经历：按时间从近到远添加 li。 -->
+        <section id="educations" class="academic-section">
+          <h1>📖 Educations</h1>
+          <ul>
+            <li><em>起止时间待补充</em>，学校、城市、专业与学位待补充。</li>
+            <li><em>2024.08 - 2028.06 (expected)</em>, Ocean University of China, Qingdao, Telecommunication Engineering.</li>
+          </ul>
+        </section>
+
+        <!-- 近期动态：可填写论文录用、竞赛、实习或项目进展。 -->
+        <section id="news" class="academic-section">
+          <h1>🔥 News</h1>
+          <ul>
+            <li><em>时间待补充</em>：新闻、研究进展或活动信息待补充。</li>
+            <li><em>时间待补充</em>：新闻、研究进展或活动信息待补充。</li>
+          </ul>
+        </section>
+
+        <!-- 论文列表。每篇论文可复制一个 paper-box。 -->
+        <section id="publications" class="academic-section">
+          <h1>📝 Publications</h1>
+          <h2>📃 Papers</h2>
+          <div class="paper-box">
+            <!-- 左侧论文图。可替换为 <img src="/images/publications/xxx.webp" alt="..." />。 -->
+            <div class="paper-image placeholder-image">论文图片待补充</div>
+            <!-- 右侧论文题目、作者、状态、链接和摘要。 -->
+            <div class="paper-text">
+              <h2>🛰️ 论文标题待补充</h2>
+              <p><strong>作者信息待补充。</strong></p>
+              <p>投稿期刊、会议、论文状态和链接待补充。</p>
+              <p><a href="#">🔗 Manuscript Preview</a></p>
+              <hr />
+              <p>论文简介、主要贡献和实验结果待补充。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 实习经历。图片和正文沿用 paper-box 的左图右文结构。 -->
+        <section id="internships" class="academic-section">
+          <h1>💻 Internships</h1>
+          <h2>实习单位与时间待补充</h2>
+          <div class="paper-box">
+            <div class="paper-image placeholder-image">实习图片待补充</div>
+            <div class="paper-text"><p>实习内容、工作职责和成果待补充。</p></div>
+          </div>
+        </section>
+
+        <!-- 项目经历。新增项目时复制 h2 + paper-box 整块。 -->
+        <section id="projects" class="academic-section">
+          <h1>🔎 Projects</h1>
+          <h2>项目名称待补充</h2>
+          <div class="paper-box">
+            <div class="paper-image placeholder-image">项目图片待补充</div>
+            <div class="paper-text"><p>项目背景、负责内容、技术栈和项目链接待补充。</p></div>
+          </div>
+        </section>
+
+        <!-- 荣誉与竞赛。Honors 和 Competitions 使用二级标题区分。 -->
+        <section id="honors-and-awards" class="academic-section">
+          <h1>🏆 Honors and Awards</h1>
+          <h2>🏅 Honors</h2>
+          <ul>
+            <li><em>2025.09</em>, National Encouragement Scholarship</li>
+            <li><em>2025.09</em>, Ocean University of China Outstanding Student</li>
+            <li><em>2025.09</em>, Ocean University of China Comprehensive Second-Class Scholarship</li>
+          </ul>
+          <h2>🎏 Competitions</h2>
+          <ul>
+            <li><em>2026.04</em>, Blue Bridge Cup Programming Contest (Python Group A), Third Prize</li>
+            <li><em>2025.12</em>, Shandong Province College Student Physics Competition, Third Prize</li>
+            <li><em>2024.12</em>, Ocean University of China Intelligent Car Competition, Third Prize</li>
+          </ul>
+        </section>
+
+        <!-- 社团、组织和学术服务经历。 -->
+        <section id="societies" class="academic-section">
+          <h1>💼 Societies</h1>
+          <ul><li><em>时间待补充</em>，社团、组织或学术服务经历待补充。</li></ul>
+        </section>
+      </article>
+    </main>
+  </div>
 </Layout>
 
 <style>
-  .hero {
-    text-align: center;
-    padding: 4rem 1rem 5rem;
-    position: relative;
+  /* 页内锚点采用平滑滚动。 */
+  :global(html) { scroll-behavior: smooth; }
+
+  /* 简历页基础视觉：白色背景、正文颜色、字体和全局行高。 */
+  .academic-site {
+    min-height: 100vh;
+    color: #3d454b;
+    font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    background: #fff;
   }
 
-  .hero-emoji {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    display: inline-block;
-    animation: float 3s ease-in-out infinite;
-    cursor: pointer;
-    user-select: none;
+  /* 顶部导航外层：sticky 使其滚动时保持在顶部，z-index 防止被正文覆盖。 */
+  .masthead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+    border-bottom: 1px solid #f0f1f2;
   }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    33% { transform: translateY(-12px) rotate(3deg); }
-    66% { transform: translateY(-4px) rotate(-3deg); }
-  }
-
-  @keyframes float-fast {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-18px) scale(1.15); }
-  }
-
-  .hero-title {
-    font-size: 2.8rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    background: linear-gradient(135deg, #c4b5fd 0%, #7dd3fc 40%, #a78bfa 70%, #c4b5fd 100%);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.75rem;
-    animation: shimmer 4s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  .hero-desc {
-    font-size: 1.15rem;
-    color: var(--text-secondary);
-    max-width: 480px;
-    margin: 0 auto 2rem;
-  }
-
-  .hero-btns {
+  /*
+    导航内容限制为 1280px，并与下方 academic-main 使用相同宽度。
+    padding-left 与正文左侧 padding 一致，用于对齐 Homepage 和左栏姓名。
+  */
+  .academic-nav {
     display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-    flex-wrap: wrap;
+    width: min(1280px, 100%);
+    min-height: 3.5rem;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
-  .section {
-    margin-bottom: 3.5rem;
+  /* 单个导航链接的字号、颜色和点击区域。 */
+  .academic-nav a {
+    position: relative;
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #7a8288;
+    font-size: 0.95rem;
+    text-decoration: none;
   }
 
-  .blog-list {
+  /* 首项不再叠加左内边距，确保 Homepage 与个人信息左边缘对齐。 */
+  .academic-nav a:first-child { padding-left: 0; }
+
+  /* 导航链接底部的 hover 横线，默认缩放为 0。 */
+  .academic-nav a::after {
+    position: absolute;
+    right: 1rem;
+    bottom: 0;
+    left: 1rem;
+    height: 3px;
+    background: #bdc1c4;
+    content: "";
+    transform: scaleX(0);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .academic-nav a:hover::after { transform: scaleX(1); }
+  .academic-nav .nav-home { font-weight: 700; }
+
+  /*
+    简历主体两列网格：15.25% 为左栏，其余空间为正文。
+    column-gap 控制左栏和正文之间的水平距离。
+  */
+  .academic-main {
     display: grid;
-    gap: 1rem;
+    width: min(1280px, 100%);
+    margin: 1rem auto 0;
+    padding: 0 1rem 4rem;
+    grid-template-columns: 15.25% minmax(0, 1fr);
+    column-gap: 5rem;
   }
 
-  @media (max-width: 640px) {
-    .hero-title {
-      font-size: 2rem;
-    }
-    .hero-desc {
-      font-size: 1rem;
-    }
+  /* 左栏固定位置。top 应略大于顶部导航高度，避免滚动时被导航遮挡。 */
+  .profile-column {
+    position: sticky;
+    top: calc(4.5rem + 1px);
+    align-self: start;
+    height: max-content;
+    padding-top: 1rem;
   }
-</style>
 
-<script>
-  const emoji = document.querySelector(".hero-emoji");
-  const emojis = ["🌱", "🌸", "🌿", "🪴", "🌻", "🌷", "🍀", "🌾", "💐", "🌺"];
-  let count = 0;
-  if (emoji) {
-    emoji.addEventListener("click", function () {
-      count++;
-      this.textContent = emojis[count % emojis.length];
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          const p = document.createElement("span");
-          p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-          p.style.cssText = `position:absolute;font-size:1.5rem;pointer-events:none;z-index:10;left:${50+(Math.random()-0.5)*30}%;top:${40+(Math.random()-0.5)*20}%;animation:particle-up .8s ease-out forwards;`;
-          this.parentElement!.appendChild(p);
-          p.addEventListener("animationend", () => p.remove());
-        }, i * 60);
-      }
-    });
+  /* 圆形头像容器。真实图片建议设置 width/height: 100% 和 object-fit: cover。 */
+  .profile-avatar {
+    display: grid;
+    width: min(175px, 100%);
+    aspect-ratio: 1;
+    margin-bottom: 1rem;
+    place-items: center;
+    border: 1px solid #f2f3f3;
+    border-radius: 50%;
+    background: #fafafa;
+    color: #b8bec3;
+    font-size: 3rem;
   }
-</script>
 
-<style is:global>
-  @keyframes particle-up {
-    0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-    100% { opacity: 0; transform: translateY(-80px) scale(0.3) rotate(40deg); }
+  /* 左栏姓名样式。 */
+  .profile-column h2 {
+    margin: 0 0 0.35rem;
+    color: #3d454b;
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .profile-school { margin: 0 0 1.3rem; }
+
+  /* 左栏简介和联系方式的统一字号。 */
+  .profile-links {
+    padding: 0;
+    list-style: none;
+    font-size: 0.90rem;
+  }
+
+  /*
+    li 的 margin-bottom 控制联系方式之间的距离；
+    profile-bio 的 margin-bottom 控制简介与地点之间的距离。
+  */
+  .profile-links { line-height: 1.5; }
+  .profile-links li { margin-bottom: 0.9rem; }
+  .profile-links .profile-bio { margin-bottom: 1.7rem; line-height: 1.5; }
+  .profile-links i { width: 1.25rem; margin-right: 0.25rem; color: #23282d; text-align: center; }
+  .profile-links a { color: #4c6f9e; }
+
+  /* min-width: 0 防止长标题或链接把右侧网格撑破。 */
+  .academic-content { min-width: 0; }
+
+  /* 主页顶部简介区域。 */
+  .intro-section {
+    padding: 0 0 0.2rem;
+  }
+
+  .intro-section p { margin: 0 0 0.8rem; }
+
+  /* CV 下载按钮；href 可指向 /files/resume.pdf 等 public 目录文件。 */
+  .cv-link {
+    display: block;
+    width: 25%;
+    min-width: 170px;
+    margin: 0.8rem 0 1.3rem;
+    padding: 0.45rem 0;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background: #f2f3f3;
+    color: #444;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* scroll-margin-top 为锚点预留吸顶导航高度。 */
+  .academic-section {
+    scroll-margin-top: 4.5rem;
+    clear: both;
+  }
+
+  /* 每个大章节标题，例如 Educations、News 和 Projects。 */
+  .academic-section > h1 {
+    margin: 1.1em 0 0.75rem;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #f2f3f3;
+    color: #3d454b;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  /* 章节内部的二级标题，例如 Papers、Honors 和 Competitions。 */
+  .academic-section > h2 {
+    margin: 1rem 0 0.7rem;
+    color: #566068;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+
+  /* 列表整体与标题、下一段内容之间的距离。 */
+  .academic-section ul,
+  .academic-section ol {
+    margin: 0.7rem 0 1.2rem;
+    padding-left: 1.55rem;
+  }
+
+  /* 单条列表项的垂直间距。 */
+  .academic-section li { margin-bottom: 0.5rem; }
+  .academic-section a { color: #3d6596; }
+
+  /* 论文、实习和项目的左图右文容器。 */
+  .paper-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 0;
+    border-bottom: 1px solid #efefef;
+    gap: 2rem;
+  }
+
+  /* 左侧展示图区域；实际图片建议使用 width: 100%; height: auto。 */
+  .paper-image {
+    display: flex;
+    width: 40%;
+    min-width: 200px;
+    max-width: 400px;
+    min-height: 150px;
+    align-items: center;
+    justify-content: center;
+    background: #f2f3f3;
+    color: #9aa2a8;
+    text-align: center;
+  }
+
+  /* 右侧文字区域，与 40% 宽的图片区共同组成一行。 */
+  .paper-text {
+    width: 60%;
+  }
+
+  .paper-text h2 { margin-top: 0; color: #3d454b; }
+
+  .paper-text hr {
+    margin: 1rem 0;
+    border: 0;
+    border-top: 1px solid #efefef;
+  }
+
+  /* 平板布局：改为单列，个人资料变为横向排列，并取消 sticky。 */
+  @media (max-width: 900px) {
+    .academic-nav { justify-content: flex-start; }
+    .academic-main { grid-template-columns: 1fr; }
+    .profile-column { position: static; display: grid; grid-template-columns: 120px 1fr; gap: 0 1.25rem; }
+    .profile-avatar { grid-row: span 3; width: 120px; }
+    .profile-links { grid-column: 1 / -1; display: flex; gap: 1rem; flex-wrap: wrap; }
+  }
+
+  /* 手机布局：个人资料居中，论文/项目图片和文字上下排列。 */
+  @media (max-width: 600px) {
+    .academic-main { padding: 0 1rem 3rem; }
+    .profile-column { display: block; text-align: center; }
+    .profile-avatar { margin: 0 auto 1rem; }
+    .profile-links { justify-content: center; }
+    .cv-link { width: 100%; }
+    .paper-box { display: block; }
+    .paper-image, .paper-text { width: 100%; max-width: none; }
+    .paper-text { margin-top: 1rem; }
   }
 </style>
