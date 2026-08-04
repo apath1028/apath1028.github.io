@@ -35,7 +35,7 @@ import Layout from "../components/Layout.astro";
 
     <!-- 桌面端两列布局：左侧个人资料，右侧简历正文。 -->
     <main class="academic-main">
-      <!-- 左侧个人资料栏。桌面端通过 CSS position: sticky 固定。 -->
+      <!-- 左侧个人资料栏。桌面端固定在视口中，不随正文滚动。 -->
       <aside class="profile-column">
         <div class="profile-avatar"><img src="/images/Homepage/profile/avatar.png" alt="Shucheng Wei" /></div>
         <h2>Shucheng Wei 🤗</h2>
@@ -149,6 +149,7 @@ import Layout from "../components/Layout.astro";
   /* 简历页基础视觉：白色背景、正文颜色、字体和全局行高。 */
   .academic-site {
     min-height: 100vh;
+    padding-top: 3.5rem;
     color: #3d454b;
     font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
     font-size: 15px;
@@ -156,10 +157,12 @@ import Layout from "../components/Layout.astro";
     background: #fff;
   }
 
-  /* 顶部导航外层：sticky 使其滚动时保持在顶部，z-index 防止被正文覆盖。 */
+  /* 顶部导航固定在视口顶部，不受简历内容容器和滚动位置影响。 */
   .masthead {
-    position: sticky;
+    position: fixed;
     top: 0;
+    right: 0;
+    left: 0;
     z-index: 20;
     background: #fff;
     border-bottom: 1px solid #f0f1f2;
@@ -224,11 +227,13 @@ import Layout from "../components/Layout.astro";
     column-gap: 5rem;
   }
 
-  /* 左栏固定位置。top 应略大于顶部导航高度，避免滚动时被导航遮挡。 */
+  /* 桌面端左栏相对视口完全固定，并与 1280px 主体容器的左边缘对齐。 */
   .profile-column {
-    position: sticky;
+    position: fixed;
     top: calc(4.5rem + 1px);
-    align-self: start;
+    left: max(1rem, calc(50vw - 640px + 1rem));
+    z-index: 10;
+    width: clamp(132px, calc(15.25vw - 0.3rem), 190px);
     height: max-content;
     padding-top: 1rem;
   }
@@ -292,7 +297,10 @@ import Layout from "../components/Layout.astro";
   .profile-links a { color: #4c6f9e; }
 
   /* min-width: 0 防止长标题或链接把右侧网格撑破。 */
-  .academic-content { min-width: 0; }
+  .academic-content {
+    min-width: 0;
+    grid-column: 2;
+  }
 
   /* 主页顶部简介区域。 */
   .intro-section {
@@ -403,7 +411,8 @@ import Layout from "../components/Layout.astro";
   @media (max-width: 900px) {
     .academic-nav { justify-content: flex-start; }
     .academic-main { grid-template-columns: 1fr; }
-    .profile-column { position: static; display: grid; grid-template-columns: 120px 1fr; gap: 0 1.25rem; }
+    .profile-column { position: static; display: grid; width: auto; grid-template-columns: 120px 1fr; gap: 0 1.25rem; }
+    .academic-content { grid-column: 1; }
     .profile-avatar { grid-row: span 3; width: 120px; height: 120px; }
     .profile-links { grid-column: 1 / -1; display: flex; gap: 1rem; flex-wrap: wrap; }
   }
