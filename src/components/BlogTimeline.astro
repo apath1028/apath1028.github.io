@@ -1,9 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getTagClass, getTagDotColor } from "../lib/tags";
+import { formatPassageDate, passageDateValue } from "../lib/passage-date";
 
 export interface Props {
-  posts: CollectionEntry<"blog">[];
+  posts: CollectionEntry<"passages">[];
 }
 
 const { posts } = Astro.props;
@@ -37,14 +38,10 @@ const delays = [
       >
         <div class={`bt-timeline-dot ${dotColor}`} />
         <article class="bt-timeline-card">
-          <a href={`/blog/${slug}`} class="bt-timeline-link">
+          <a href={`/passages/${slug}`} class="bt-timeline-link">
             <div class="bt-timeline-meta">
-              <time class="bt-timeline-date">
-                {date.toLocaleDateString("zh-CN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+              <time class="bt-timeline-date" datetime={passageDateValue(date)}>
+                {formatPassageDate(date)}
               </time>
               {category && <span>{category}</span>}
             </div>

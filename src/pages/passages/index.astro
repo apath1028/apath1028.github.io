@@ -1,0 +1,474 @@
+---
+import Layout from "../../components/Layout.astro";
+import BlogCard from "../../components/BlogCard.astro";
+import BlogTimeline from "../../components/BlogTimeline.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("passages");
+const publishedPosts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Extract unique tags (preserve first-appearance order)
+const allTags = publishedPosts.flatMap((p) => p.data.tags ?? []);
+const uniqueTags = [...new Set(allTags)];
+const uniqueCategories = [
+  ...new Set(
+    publishedPosts
+      .map((p) => p.data.category)
+      .filter((category): category is string => Boolean(category)),
+  ),
+];
+---
+
+<Layout title="文章 — Apath's Blog" description="博客文章列表">
+  <div class="container" id="passagesPage">
+    <header class="page-header reveal">
+      <div>
+        <h1>文章</h1>
+        <p class="page-desc">共 {publishedPosts.length} 篇文章</p>
+      </div>
+      <a class="archive-link" href="/passages/archive">文章归档 →</a>
+    </header>
+
+    <!-- Search, category/tag filters and view toggle -->
+    <div class="blog-toolbar reveal reveal-delay-1">
+      <div class="search-row">
+        <label class="search-field">
+          <span class="sr-only">搜索文章</span>
+          <input
+            id="blogSearch"
+            type="search"
+            placeholder="搜索标题、简介或标签"
+            autocomplete="off"
+          />
+        </label>
+        {uniqueCategories.length > 0 && (
+          <label class="category-field">
+            <span class="sr-only">按分类筛选</span>
+            <select id="categoryFilter">
+              <option value="全部">全部分类</option>
+              {uniqueCategories.map((category) => (
+                <option value={category}>{category}</option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
+      <div class="filter-row">
+        {uniqueTags.length > 0 && (
+        <div class="tag-filter" id="tagFilter">
+          <button class="tag-chip active" data-tag="全部">全部</button>
+          {uniqueTags.map((tag) => (
+            <button class={`tag-chip tag-chip--${tag}`} data-tag={tag}>
+              {tag}
+            </button>
+          ))}
+        </div>
+        )}
+        <div class="view-toggle" id="viewToggle">
+          <button class="view-btn active" data-view="grid" title="网格视图">
+            ⊞ 网格
+          </button>
+          <button class="view-btn" data-view="timeline" title="时间线视图">
+            ⊡ 时间线
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid view (default) -->
+    <section id="blog-grid">
+      {publishedPosts.length > 0 ? (
+        <div class="blog-list">
+          {publishedPosts.map((post) => (
+            <div
+              class="blog-item"
+              data-tags={post.data.tags?.join(",") || ""}
+              data-category={post.data.category || ""}
+              data-search={[
+                post.data.title,
+                post.data.description,
+                post.data.category,
+                ...(post.data.tags || []),
+              ]
+                .filter(Boolean)
+                .join(" ")
+                .toLocaleLowerCase("zh-CN")}
+            >
+              <BlogCard post={post} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state"><p>还没有文章，敬请期待 🌱</p></div>
+      )}
+    </section>
+
+    <!-- Timeline view (hidden by default) -->
+    <section id="blog-timeline" style="display:none">
+      {publishedPosts.length > 0 ? (
+        <BlogTimeline posts={publishedPosts} />
+      ) : null}
+    </section>
+
+    <!-- Filter empty state -->
+    <div id="blog-empty" class="empty-state" style="display:none">
+      <p id="blog-empty-text">没有找到匹配的文章</p>
+      <button class="btn btn-ghost" id="blog-reset-filter" style="margin-top:1rem">
+        查看全部文章
+      </button>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.3rem;
+  }
+
+  .page-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .archive-link {
+    flex: none;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .archive-link:hover {
+    color: var(--accent);
+  }
+
+  .blog-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  /* ===== Toolbar ===== */
+  .blog-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-row,
+  .filter-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .search-field {
+    flex: 1;
+    min-width: 12rem;
+  }
+
+  .search-field input,
+  .category-field select {
+    width: 100%;
+    min-height: 2.6rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 0.85rem;
+    outline: none;
+  }
+
+  .search-field input {
+    padding: 0.55rem 0.85rem;
+  }
+
+  .category-field select {
+    min-width: 8.5rem;
+    padding: 0.55rem 2rem 0.55rem 0.75rem;
+  }
+
+  .search-field input:focus,
+  .category-field select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ===== Tag filter chips ===== */
+  .tag-filter {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filter-row .view-toggle {
+    margin-left: auto;
+    flex: none;
+  }
+
+  .tag-chip {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    transition: all 0.25s var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .tag-chip:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border);
+    transform: translateY(-1px);
+  }
+
+  .tag-chip.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 2px 12px var(--accent-glow);
+  }
+
+  /* ===== View toggle ===== */
+  .view-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .view-btn {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    transition: all 0.25s var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .view-btn:first-child {
+    border-right: 1px solid var(--border-soft);
+  }
+
+  .view-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+  }
+
+  .view-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 640px) {
+    .blog-toolbar {
+      gap: 0.75rem;
+    }
+
+    .page-header {
+      align-items: flex-start;
+    }
+
+    .search-row {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .category-field select {
+      min-width: 100%;
+    }
+
+    .tag-filter {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tag-filter::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-row {
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  let cleanupPassagesIndex: (() => void) | undefined;
+
+  function initPassagesIndex() {
+    cleanupPassagesIndex?.();
+
+    const page = document.getElementById("passagesPage");
+    if (!page) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    let activeTag = "全部";
+    let activeCategory = "全部";
+    let searchQuery = "";
+    let activeView = "grid";
+
+    const tagChips = page.querySelectorAll(".tag-chip");
+    const viewBtns = page.querySelectorAll(".view-btn");
+    const searchInput = page.querySelector<HTMLInputElement>("#blogSearch");
+    const categorySelect = page.querySelector<HTMLSelectElement>("#categoryFilter");
+    const blogGrid = page.querySelector<HTMLElement>("#blog-grid");
+    const blogTimeline = page.querySelector<HTMLElement>("#blog-timeline");
+    const blogEmpty = page.querySelector<HTMLElement>("#blog-empty");
+    const emptyText = page.querySelector<HTMLElement>("#blog-empty-text");
+    const resetBtn = page.querySelector<HTMLButtonElement>("#blog-reset-filter");
+    if (!blogGrid || !blogTimeline || !blogEmpty) return;
+
+  function matchesFilters(el: HTMLElement) {
+    const tags = (el.dataset.tags || "").split(",").filter(Boolean);
+    const category = el.dataset.category || "";
+    const searchableText = el.dataset.search || "";
+    return (
+      (activeTag === "全部" || tags.includes(activeTag)) &&
+      (activeCategory === "全部" || category === activeCategory) &&
+      (!searchQuery || searchableText.includes(searchQuery))
+    );
+  }
+
+  function applyFilters() {
+    let visibleCount = 0;
+    const gridItems = page.querySelectorAll(".blog-item");
+    gridItems.forEach((item) => {
+      const el = item as HTMLElement;
+      const match = matchesFilters(el);
+      el.style.display = match ? "" : "none";
+      if (match) visibleCount++;
+    });
+
+    const tlItems = page.querySelectorAll(".bt-timeline-item");
+    tlItems.forEach((item) => {
+      const el = item as HTMLElement;
+      el.style.display = matchesFilters(el) ? "" : "none";
+    });
+
+    if (visibleCount === 0) {
+      blogGrid.style.display = "none";
+      blogTimeline.style.display = "none";
+      blogEmpty.style.display = "";
+      if (emptyText) emptyText.textContent = "没有找到匹配的文章";
+    } else {
+      blogEmpty.style.display = "none";
+      applyView(activeView);
+    }
+
+    tagChips.forEach((chip) => {
+      chip.classList.toggle("active", (chip as HTMLElement).dataset.tag === activeTag);
+    });
+  }
+
+  tagChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      activeTag = (chip as HTMLElement).dataset.tag || "全部";
+      applyFilters();
+    }, { signal });
+  });
+
+  searchInput?.addEventListener("input", () => {
+    searchQuery = searchInput.value.trim().toLocaleLowerCase("zh-CN");
+    applyFilters();
+  }, { signal });
+
+  categorySelect?.addEventListener("change", () => {
+    activeCategory = categorySelect.value;
+    applyFilters();
+  }, { signal });
+
+  function applyView(view: string) {
+    activeView = view;
+    blogGrid.style.display = view === "grid" ? "" : "none";
+    blogTimeline.style.display = view === "timeline" ? "" : "none";
+
+    if (blogEmpty.style.display !== "none") {
+      blogGrid.style.display = "none";
+      blogTimeline.style.display = "none";
+    }
+
+    viewBtns.forEach((btn) => {
+      btn.classList.toggle("active", (btn as HTMLElement).dataset.view === view);
+    });
+  }
+
+  viewBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      applyView((btn as HTMLElement).dataset.view || "grid");
+    }, { signal });
+  });
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      activeTag = "全部";
+      activeCategory = "全部";
+      searchQuery = "";
+      if (searchInput) searchInput.value = "";
+      if (categorySelect) categorySelect.value = "全部";
+      applyFilters();
+    }, { signal });
+  }
+
+  const initialCategory = new URLSearchParams(window.location.search).get("category");
+  if (
+    initialCategory &&
+    categorySelect &&
+    Array.from(categorySelect.options).some((option) => option.value === initialCategory)
+  ) {
+    activeCategory = initialCategory;
+    categorySelect.value = initialCategory;
+    applyFilters();
+  }
+
+    cleanupPassagesIndex = () => {
+      controller.abort();
+      cleanupPassagesIndex = undefined;
+    };
+  }
+
+  document.addEventListener("astro:page-load", initPassagesIndex);
+  initPassagesIndex();
+</script>

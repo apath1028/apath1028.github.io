@@ -1,0 +1,472 @@
+---
+import Layout from "../../components/Layout.astro";
+import Toc from "../../components/Toc.astro";
+import { getCollection, getEntry, render } from "astro:content";
+import { formatPassageDate, passageDateValue } from "../../lib/passage-date";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("passages");
+  return posts
+    .filter((post) => !post.data.draft)
+    .map((post) => ({
+      params: { slug: post.id.replace(/\.mdx?$/, "") },
+      props: { id: post.id },
+    }));
+}
+
+const { id } = Astro.props;
+const post = await getEntry("passages", id);
+if (!post) throw new Error(`Post not found: ${id}`);
+const { Content } = await render(post);
+const { title, description, date, updatedDate, category, tags, cover, coverAlt } = post.data;
+
+const publishedPosts = (await getCollection("passages"))
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const currentIndex = publishedPosts.findIndex((entry) => entry.id === post.id);
+const previousPost = currentIndex > 0 ? publishedPosts[currentIndex - 1] : undefined;
+const nextPost =
+  currentIndex >= 0 && currentIndex < publishedPosts.length - 1
+    ? publishedPosts[currentIndex + 1]
+    : undefined;
+const postHref = (entry: (typeof publishedPosts)[number]) =>
+  `/passages/${entry.id.replace(/\.mdx?$/, "")}`;
+---
+
+<Layout title={`${title} — Apath's Blog`} description={description} image={cover} toc={true}>
+  <article class="article">
+    <a href="/passages" class="article-back">
+      <span class="arr">←</span> Return to Article List
+    </a>
+    <header class="article-header">
+      <h1 class="article-title">{title}</h1>
+      <div class="article-meta">
+        <span>
+          Published on
+          <time datetime={passageDateValue(date)}>
+            {formatPassageDate(date)}
+          </time>
+        </span>
+        {updatedDate && (
+          <span>
+            Updated on
+            <time datetime={passageDateValue(updatedDate)}>
+              {formatPassageDate(updatedDate, {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+              })}
+            </time>
+          </span>
+        )}
+        {category && <a class="article-category" href={`/passages?category=${encodeURIComponent(category)}`}>{category}</a>}
+        {tags && tags.length > 0 && (
+          <div class="article-tags">
+            {tags.map((tag) => <span class="tag tag-purple">{tag}</span>)}
+          </div>
+        )}
+      </div>
+    </header>
+
+    {cover && (
+      <figure class="article-cover">
+        <img src={cover} alt={coverAlt || title} />
+      </figure>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {(previousPost || nextPost) && (
+      <nav class="article-nav" aria-label="相邻文章">
+        {previousPost ? (
+          <a class="article-nav-item" href={postHref(previousPost)} rel="prev">
+            <span>Previous</span>
+            <strong>{previousPost.data.title}</strong>
+          </a>
+        ) : <span />}
+        {nextPost ? (
+          <a class="article-nav-item article-nav-item--next" href={postHref(nextPost)} rel="next">
+            <span>Next</span>
+            <strong>{nextPost.data.title}</strong>
+          </a>
+        ) : <span />}
+      </nav>
+    )}
+
+  </article>
+
+  <Toc slot="toc" />
+</Layout>
+
+<style>
+  .article {
+    /* grid handles positioning; no max-width needed */
+    padding-top: 3.25rem;
+  }
+
+  .article-header {
+    margin-bottom: 2rem;
+  }
+
+  .article-back {
+    position: fixed;
+    top: 1rem;
+    left: calc(
+      max(0px, 50vw - 750px) + var(--sidebar-w) + var(--page-gap) + 2.5rem
+    );
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    width: max-content;
+    padding: 0.42rem 0.7rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    background: var(--bg-glass);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .article-back:hover {
+    color: var(--accent);
+    gap: 0.6rem;
+  }
+
+  .article-back .arr {
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  .article-back:hover .arr {
+    transform: translateX(-4px);
+  }
+
+  .article-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.03em;
+  }
+
+  .article-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    align-items: center;
+  }
+
+  .article-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .article-category {
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .article-cover {
+    width: 100%;
+    aspect-ratio: 16 / 8;
+    margin: 0 0 2.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+  }
+
+  .article-cover img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .article-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 3.5rem;
+  }
+
+  .article-nav-item {
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    text-decoration: none;
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .article-nav-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .article-nav-item span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .article-nav-item strong {
+    display: block;
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .article-nav-item--next {
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    .article-title {
+      font-size: 1.6rem;
+    }
+
+    .article-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .article-nav > span {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .article-back {
+      left: calc(var(--sidebar-w) + 3rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .article-back {
+      left: 1rem;
+    }
+  }
+</style>
+
+<script>
+  const languageNames: Record<string, string> = {
+    bash: "Bash",
+    c: "C",
+    cpp: "C++",
+    cs: "C#",
+    css: "CSS",
+    html: "HTML",
+    java: "Java",
+    javascript: "JavaScript",
+    js: "JavaScript",
+    json: "JSON",
+    jsx: "JSX",
+    markdown: "Markdown",
+    md: "Markdown",
+    plaintext: "Text",
+    python: "Python",
+    py: "Python",
+    shell: "Shell",
+    sh: "Shell",
+    sql: "SQL",
+    text: "Text",
+    ts: "TypeScript",
+    tsx: "TSX",
+    typescript: "TypeScript",
+    xml: "XML",
+    yaml: "YAML",
+    yml: "YAML",
+  };
+
+  function copyWithFallback(text: string) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    if (!copied) throw new Error("Copy failed");
+  }
+
+  function initCodeBlocks() {
+    document.querySelectorAll<HTMLElement>(".prose pre").forEach((pre) => {
+      if (pre.closest(".code-block")) return;
+
+      const rawLanguage = (pre.dataset.language || "text").toLowerCase();
+      const language = languageNames[rawLanguage] || rawLanguage.toUpperCase();
+      const wrapper = document.createElement("div");
+      const header = document.createElement("div");
+      const languageLabel = document.createElement("span");
+      const copyButton = document.createElement("button");
+      const copyIcon = document.createElement("span");
+      const copyLabel = document.createElement("span");
+
+      wrapper.className = "code-block";
+      header.className = "code-block-header";
+      languageLabel.className = "code-language";
+      languageLabel.textContent = language;
+      copyButton.className = "code-copy";
+      copyButton.type = "button";
+      copyButton.title = "复制代码";
+      copyButton.setAttribute("aria-label", `复制 ${language} 代码`);
+      copyIcon.className = "code-copy-icon";
+      copyIcon.setAttribute("aria-hidden", "true");
+      copyLabel.textContent = "复制";
+
+      copyButton.append(copyIcon, copyLabel);
+      header.append(languageLabel, copyButton);
+      pre.before(wrapper);
+      wrapper.append(header, pre);
+
+      copyButton.addEventListener("click", async () => {
+        const code = pre.querySelector("code")?.textContent || pre.textContent || "";
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(code);
+          } else {
+            copyWithFallback(code);
+          }
+          copyButton.classList.add("copied");
+          copyLabel.textContent = "已复制";
+        } catch {
+          try {
+            copyWithFallback(code);
+            copyButton.classList.add("copied");
+            copyLabel.textContent = "已复制";
+          } catch {
+            copyLabel.textContent = "复制失败";
+          }
+        }
+
+        window.setTimeout(() => {
+          copyButton.classList.remove("copied");
+          copyLabel.textContent = "复制";
+        }, 1600);
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initCodeBlocks);
+  initCodeBlocks();
+</script>
+
+<script>
+  let cleanupArticleImages: (() => void) | undefined;
+
+  function initArticleImages() {
+    cleanupArticleImages?.();
+
+    const article = document.querySelector<HTMLElement>(".article");
+    const images = article?.querySelectorAll<HTMLImageElement>(".prose img");
+    if (!article || !images?.length) return;
+
+    article.querySelectorAll<HTMLElement>(".article-image").forEach((frame) => {
+      const image = frame.querySelector("img");
+      if (image) frame.before(image);
+      frame.remove();
+    });
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    const viewer = document.createElement("div");
+    const viewerImage = document.createElement("img");
+    const closeButton = document.createElement("button");
+
+    viewer.className = "image-viewer";
+    viewer.setAttribute("role", "dialog");
+    viewer.setAttribute("aria-modal", "true");
+    viewer.setAttribute("aria-label", "图片预览");
+    viewerImage.alt = "";
+    closeButton.className = "image-viewer-close";
+    closeButton.type = "button";
+    closeButton.title = "关闭图片预览";
+    closeButton.setAttribute("aria-label", "关闭图片预览");
+    closeButton.textContent = "×";
+    viewer.append(viewerImage, closeButton);
+    article.append(viewer);
+
+    function closeViewer() {
+      viewer.classList.remove("is-open");
+      viewerImage.removeAttribute("src");
+      document.body.style.removeProperty("overflow");
+    }
+
+    closeButton.addEventListener("click", closeViewer, { signal });
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) closeViewer();
+    }, { signal });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && viewer.classList.contains("is-open")) {
+        closeViewer();
+      }
+    }, { signal });
+
+    images.forEach((image) => {
+      if (image.closest(".article-image")) return;
+
+      const source = image.currentSrc || image.src;
+      const frame = document.createElement("div");
+      const fallback = document.createElement("div");
+      const fallbackText = document.createElement("span");
+      const sourceLink = document.createElement("a");
+
+      frame.className = "article-image";
+      fallback.className = "article-image-fallback";
+      fallbackText.textContent = "图片加载失败，远程图床可能暂时不可用";
+      sourceLink.href = source;
+      sourceLink.target = "_blank";
+      sourceLink.rel = "noreferrer noopener";
+      sourceLink.textContent = "打开原图链接";
+      fallback.append(fallbackText, sourceLink);
+      image.before(frame);
+      frame.append(image, fallback);
+
+      const markReady = () => {
+        frame.classList.remove("is-error");
+        frame.classList.add("is-ready");
+      };
+      const markError = () => {
+        frame.classList.remove("is-ready");
+        frame.classList.add("is-error");
+      };
+
+      image.addEventListener("load", markReady, { signal });
+      image.addEventListener("error", markError, { signal });
+      image.addEventListener("click", () => {
+        if (!frame.classList.contains("is-ready")) return;
+        viewerImage.src = image.currentSrc || image.src;
+        viewerImage.alt = image.alt;
+        viewer.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }, { signal });
+
+      if (image.complete) {
+        if (image.naturalWidth > 0) markReady();
+        else markError();
+      }
+    });
+
+    cleanupArticleImages = () => {
+      closeViewer();
+      controller.abort();
+      viewer.remove();
+      cleanupArticleImages = undefined;
+    };
+  }
+
+  document.addEventListener("astro:page-load", initArticleImages);
+  initArticleImages();
+</script>

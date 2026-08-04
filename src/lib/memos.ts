@@ -87,20 +87,20 @@ function getMockMemos(): Memo[] {
   return [
     {
       id: 1,
-      content: "🌱 数字花园今天开始播种了。",
+      content: "🌱 None",
       createdTs: Math.floor(Date.now() / 1000) - 86400,
       tags: ["#碎碎念"],
     },
     {
       id: 2,
-      content: "📝 在配置 Astro + KaTeX 中，数学公式 $E=mc^2$ 渲染完美。",
+      content: "📝 technical knowledge",
       createdTs: Math.floor(Date.now() / 1000) - 172800,
       tags: ["#技术"],
     },
     {
       id: 3,
       content:
-        "正在思考数字花园应该长成什么样子... 不只是博客，更是知识的沉淀。",
+        "Thinking",
       createdTs: Math.floor(Date.now() / 1000) - 259200,
       tags: ["#思考"],
     },

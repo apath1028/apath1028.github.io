@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Sidebar from "./Sidebar.astro";
 import Footer from "./Footer.astro";
+import { ClientRouter } from "astro:transitions";
 
 export interface Props {
   title?: string;
@@ -14,8 +15,8 @@ export interface Props {
 }
 
 const {
-  title = "数字花园",
-  description = "个人博客与数字花园 — 记录知识、思考与日常",
+  title = "Apath's Blog",
+  description = "个人博客 — 记录知识、思考与日常",
   image,
   toc = false,
   sidebar = true,
@@ -33,13 +34,13 @@ const socialImage = image
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#1a1b2e" />
-
+    
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     {socialImage && <meta property="og:image" content={socialImage} />}
-
+    
     <!-- KaTeX -->
     <link
       rel="stylesheet"
@@ -50,6 +51,7 @@ const socialImage = image
 
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
     <slot name="head" />
   </head>
   <body class:list={[{ "resume-theme": !sidebar }]}>
@@ -61,7 +63,7 @@ const socialImage = image
     </div>
 
     <!-- Cursor glow -->
-    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="cursor-glow" id="cursorGlow" transition:persist="cursor-glow"></div>
 
     <!-- Left sidebar (fixed position, outside grid flow) -->
     {sidebar && <Sidebar />}
@@ -77,6 +79,18 @@ const socialImage = image
       </main>
       {toc && <slot name="toc" />}
     </div>
+    
+    {sidebar && (
+      <div
+        class="site-runtime"
+        id="siteRuntime"
+        transition:persist="site-runtime"
+        data-start="2025-05-21T00:00:00+08:00"
+        aria-live="off"
+      >
+        本站已苟活: 0 天 00 时 00 分 00 秒
+      </div>
+    )}
 
     <!-- Ripple animation style -->
     <style is:global>
@@ -92,6 +106,32 @@ const socialImage = image
         to {
           transform: scale(4);
           opacity: 0;
+        }
+      }
+
+      .site-runtime {
+        position: fixed;
+        right: 1.25rem;
+        bottom: 1rem;
+        z-index: 40;
+        padding: 0.45rem 0.75rem;
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-sm);
+        background: var(--bg-glass);
+        backdrop-filter: blur(14px);
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+        pointer-events: none;
+      }
+
+      @media (max-width: 640px) {
+        .site-runtime {
+          right: 0.75rem;
+          bottom: 0.75rem;
+          font-size: 0.66rem;
         }
       }
     </style>
@@ -173,12 +213,48 @@ const socialImage = image
           avatar.style.transform = "rotate(0deg) scale(1)";
         });
       }
+
+      let siteRuntimeTimer;
+
+      function initSiteRuntime() {
+        if (siteRuntimeTimer) window.clearInterval(siteRuntimeTimer);
+
+        const runtime = document.getElementById("siteRuntime");
+        const startValue = runtime?.dataset.start;
+        if (!runtime || !startValue) return;
+
+        const startTime = new Date(startValue).getTime();
+        if (Number.isNaN(startTime)) return;
+
+        const updateRuntime = () => {
+          const elapsedSeconds = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
+          const days = Math.floor(elapsedSeconds / 86400);
+          const hours = Math.floor((elapsedSeconds % 86400) / 3600);
+          const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+          const seconds = elapsedSeconds % 60;
+          const pad = (value) => String(value).padStart(2, "0");
+
+          runtime.textContent = `本站已苟活: ${days} 天 ${pad(hours)} 时 ${pad(minutes)} 分 ${pad(seconds)} 秒`;
+        };
+
+        updateRuntime();
+        siteRuntimeTimer = window.setInterval(updateRuntime, 1000);
+      }
       // ===== Init all =====
       initCursorGlow();
       initParallaxOrbs();
       initScrollReveal();
       initButtonRipple();
       initAboutAvatar();
+      initSiteRuntime();
+
+      // Re-bind interactions after a ClientRouter navigation replaces page content.
+      document.addEventListener("astro:page-load", () => {
+        initScrollReveal();
+        initButtonRipple();
+        initAboutAvatar();
+        initSiteRuntime();
+      });
     </script>
   </body>
 </html>

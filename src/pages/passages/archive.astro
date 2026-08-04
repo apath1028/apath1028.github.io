@@ -1,13 +1,14 @@
 ---
 import Layout from "../../components/Layout.astro";
 import { getCollection } from "astro:content";
+import { formatPassageDate, passageDateValue } from "../../lib/passage-date";
 
-const posts = (await getCollection("blog"))
+const posts = (await getCollection("passages"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 const postsByYear = posts.reduce((groups, post) => {
-  const year = post.data.date.getFullYear();
+  const year = post.data.date.getUTCFullYear();
   const entries = groups.get(year) || [];
   entries.push(post);
   groups.set(year, entries);
@@ -17,10 +18,10 @@ const postsByYear = posts.reduce((groups, post) => {
 const years = [...postsByYear.entries()];
 ---
 
-<Layout title="文章归档 — 数字花园" description={`按年份浏览全部 ${posts.length} 篇文章`}>
+<Layout title="文章归档 — Apath's Blog" description={`按年份浏览全部 ${posts.length} 篇文章`}>
   <div class="container archive-page">
     <header class="page-header reveal">
-      <a href="/blog" class="back-link">← 返回文章列表</a>
+      <a href="/passages" class="back-link">← 返回文章列表</a>
       <h1>文章归档</h1>
       <p>按发布时间浏览全部 {posts.length} 篇文章</p>
     </header>
@@ -33,13 +34,13 @@ const years = [...postsByYear.entries()];
             <ol>
               {yearPosts.map((post) => (
                 <li>
-                  <time datetime={post.data.date.toISOString()}>
-                    {post.data.date.toLocaleDateString("zh-CN", {
+                  <time datetime={passageDateValue(post.data.date)}>
+                    {formatPassageDate(post.data.date, {
                       month: "2-digit",
                       day: "2-digit",
                     })}
                   </time>
-                  <a href={`/blog/${post.id.replace(/\.mdx?$/, "")}`}>
+                  <a href={`/passages/${post.id.replace(/\.mdx?$/, "")}`}>
                     {post.data.title}
                   </a>
                   {post.data.category && <span>{post.data.category}</span>}

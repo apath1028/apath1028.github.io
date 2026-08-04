@@ -3,7 +3,7 @@ export interface Props {
   title?: string;
 }
 
-const { title = "Shucheng Wei" } = Astro.props;
+const { title = "Apath" } = Astro.props;
 const currentPath = Astro.url.pathname;
 
 function isActive(path: string): string {
@@ -12,31 +12,36 @@ function isActive(path: string): string {
 }
 ---
 
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar" transition:persist="sidebar">
   <div class="sidebar-card">
     <a class="resume-return" href="/" title="Return to resume">
       <span aria-hidden="true">←</span> cv
     </a>
 
-    <!-- Avatar -->
-    <div class="sidebar-avatar" id="sidebarAvatar">🌱</div>
+    <!-- Replace the placeholder with an <img> when the avatar is ready. -->
+    <a class="sidebar-avatar-link" href="/about" aria-label="About">
+      <span class="sidebar-avatar">
+        <span class="avatar-placeholder" aria-hidden="true">+</span>
+        <span class="avatar-badge" aria-hidden="true">🌱</span>
+      </span>
+    </a>
 
     <!-- Name -->
     <div class="sidebar-name">{title}</div>
 
     <!-- Signature -->
-    <p class="sidebar-sig">记录知识与日常<br />种一片自己的数字花园</p>
+    <p class="sidebar-sig">记录知识与日常<br />noting daily life</p>
 
     <!-- Divider -->
     <div class="sidebar-divider"></div>
 
     <!-- Vertical Nav -->
     <nav class="sidebar-nav" id="sidebarNav">
-      <a href="/garden" class={`sidebar-nav-link ${isActive("/garden")}`}>
+      <a href="/blog" class={`sidebar-nav-link ${isActive("/blog")}`}>
         <span class="nav-icon">🏠</span> Blog Home
       </a>
-      <a href="/blog" class={`sidebar-nav-link ${isActive("/blog")}`}>
-        <span class="nav-icon">📝</span> Passage
+      <a href="/passages" class={`sidebar-nav-link ${isActive("/passages")}`}>
+        <span class="nav-icon">📝</span> Passages
       </a>
       <a href="/thoughts" class={`sidebar-nav-link ${isActive("/thoughts")}`}>
         <span class="nav-icon">💭</span> Thoughts
@@ -45,7 +50,7 @@ function isActive(path: string): string {
         <span class="nav-icon">🙋</span> About
       </a>
     </nav>
-
+    
     <!-- Bottom status -->
     <div class="sidebar-status">
       <span class="status-dot"></span> 在线 · 持续生长中
@@ -101,33 +106,57 @@ function isActive(path: string): string {
     box-shadow: 0 0 60px rgba(167, 139, 250, 0.06);
   }
 
-  /* Avatar */
-  .sidebar-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #a78bfa, #2dd4bf);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
+  /* Avatar placeholder */
+  .sidebar-avatar-link {
+    display: block;
     margin-bottom: 1rem;
+    border-radius: 50%;
+    text-decoration: none;
+  }
+
+  .sidebar-avatar-link:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .sidebar-avatar {
+    position: relative;
+    display: grid;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #666b88, #3b3d55 68%);
     box-shadow: 0 0 30px var(--accent-glow);
-    cursor: pointer;
-    transition: all 0.45s var(--ease-spring);
     flex-shrink: 0;
-    animation: avatar-float 4s ease-in-out infinite;
     user-select: none;
+    place-items: center;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
   }
 
-  @keyframes avatar-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+  .sidebar-avatar-link:hover .sidebar-avatar {
+    box-shadow: 0 0 45px var(--accent-glow), 0 0 70px rgba(45, 212, 191, 0.16);
+    transform: scale(1.05);
   }
 
-  .sidebar-avatar:hover {
-    box-shadow: 0 0 50px var(--accent-glow), 0 0 80px rgba(45, 212, 191, 0.2);
-    transform: scale(1.08) rotate(5deg);
+  .avatar-placeholder {
+    color: rgba(232, 230, 240, 0.62);
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .avatar-badge {
+    position: absolute;
+    right: -7px;
+    bottom: -4px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--bg-base);
+    border-radius: 50%;
+    background: #3c3f4b;
+    font-size: 1.15rem;
+    place-items: center;
+    pointer-events: none;
   }
 
   /* Name */
@@ -249,12 +278,26 @@ function isActive(path: string): string {
       margin-bottom: 0.25rem;
     }
 
-    .sidebar-avatar {
-      width: 40px;
-      height: 40px;
-      font-size: 1.2rem;
+    .sidebar-avatar-link {
       margin-bottom: 0;
-      animation: none;
+    }
+
+    .sidebar-avatar {
+      width: 52px;
+      height: 52px;
+    }
+
+    .avatar-placeholder {
+      font-size: 1.1rem;
+    }
+
+    .avatar-badge {
+      right: -5px;
+      bottom: -3px;
+      width: 20px;
+      height: 20px;
+      border-width: 2px;
+      font-size: 0.75rem;
     }
 
     .sidebar-name {
@@ -292,55 +335,14 @@ function isActive(path: string): string {
 </style>
 
 <script>
-  // ===== Avatar emoji party =====
-  const avatar = document.getElementById("sidebarAvatar");
-  if (avatar) {
-    const emojis = ["🌱", "🌸", "🌿", "🪴", "🌻", "🌷", "🍀", "🌾", "💐", "🌺"];
-    let clickCount = 0;
-
-    avatar.addEventListener("click", function () {
-      clickCount++;
-      this.textContent = emojis[clickCount % emojis.length];
-
-      const rect = this.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-
-      for (let i = 0; i < 8; i++) {
-        setTimeout(() => {
-          const particle = document.createElement("span");
-          particle.textContent =
-            emojis[Math.floor(Math.random() * emojis.length)];
-          const angle = Math.random() * Math.PI * 2;
-          const dist = 20 + Math.random() * 50;
-          const tx = Math.cos(angle) * (40 + Math.random() * 60);
-          const ty = Math.sin(angle) * (40 + Math.random() * 60) - 40;
-          particle.style.cssText = `
-            position: fixed; font-size: 1.3rem; pointer-events: none; z-index: 10000;
-            left: ${cx + Math.cos(angle) * dist}px;
-            top: ${cy + Math.sin(angle) * dist}px;
-            animation: particle-pop 0.75s ease-out forwards;
-            --tx: ${tx}px;
-            --ty: ${ty}px;
-          `;
-          document.body.appendChild(particle);
-          particle.addEventListener("animationend", () => particle.remove());
-        }, i * 40);
-      }
+  function updateSidebarActive() {
+    const currentPath = window.location.pathname;
+    document.querySelectorAll(".sidebar-nav-link").forEach((link) => {
+      const href = link.getAttribute("href") || "";
+      const active = href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+      link.classList.toggle("active", active);
     });
   }
-</script>
 
-<style is:global>
-  @keyframes particle-pop {
-    0% {
-      opacity: 1;
-      transform: translate(0, 0) scale(1) rotate(0deg);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(var(--tx, 60px), var(--ty, -80px)) scale(0.3)
-        rotate(40deg);
-    }
-  }
-</style>
+  document.addEventListener("astro:page-load", updateSidebarActive);
+</script>
