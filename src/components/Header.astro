@@ -22,7 +22,8 @@ function isActive(path: string): string {
     </a>
     <nav class="nav" id="nav">
       <a href="/" class={`nav-link ${isActive("/")}`} data-section="home">首页</a>
-      <a href="/blog" class={`nav-link ${isActive("/blog")}`} data-section="blog">文章</a>
+      <a href="/blog" class={`nav-link ${isActive("/blog")}`} data-section="blog">Blog</a>
+      <a href="/passages" class={`nav-link ${isActive("/passages")}`} data-section="passages">Passages</a>
       <a href="/thoughts" class={`nav-link ${isActive("/thoughts")}`} data-section="thoughts">动态</a>
       <a href="/about" class={`nav-link ${isActive("/about")}`} data-section="about">关于</a>
       <span class="nav-indicator" id="navIndicator"></span>
@@ -36,7 +37,8 @@ function isActive(path: string): string {
   <!-- Mobile nav -->
   <nav class="nav-mobile" id="navMobile">
     <a href="/" class={`nav-link ${isActive("/")}`}>首页</a>
-    <a href="/blog" class={`nav-link ${isActive("/blog")}`}>文章</a>
+    <a href="/blog" class={`nav-link ${isActive("/blog")}`}>Blog</a>
+    <a href="/passages" class={`nav-link ${isActive("/passages")}`}>Passages</a>
     <a href="/thoughts" class={`nav-link ${isActive("/thoughts")}`}>动态</a>
     <a href="/about" class={`nav-link ${isActive("/about")}`}>关于</a>
   </nav>

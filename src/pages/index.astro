@@ -8,7 +8,7 @@ import Layout from "../components/Layout.astro";
   - title/description 用于浏览器标题和 SEO 描述。
   - sidebar={false} 会启用白色简历主题，博客页面不受影响。
 -->
-<Layout title="Homepage" description="个人学术主页" sidebar={false}>
+<Layout title="Shucheng Wei - Homepage" description="Academic Homepage" sidebar={false}>
   <!-- Font Awesome 提供地点、邮箱、GitHub 和 ORCID 图标。 -->
   <Fragment slot="head">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
@@ -29,7 +29,7 @@ import Layout from "../components/Layout.astro";
         <a href="#projects">Projects</a>
         <a href="#honors-and-awards">Honors and Awards</a>
         <a href="#societies">Societies</a>
-        <a href="/garden">Card</a>
+        <a href="/blog">Blog</a>
       </nav>
     </header>
 
@@ -37,11 +37,7 @@ import Layout from "../components/Layout.astro";
     <main class="academic-main">
       <!-- 左侧个人资料栏。桌面端通过 CSS position: sticky 固定。 -->
       <aside class="profile-column">
-        <!--
-          头像占位。替换图片时可改为：
-          <div class="profile-avatar"><img src="/images/profile/avatar.jpg" alt="Shucheng Wei" /></div>
-        -->
-        <div class="profile-avatar" aria-label="头像待补充">?</div>
+        <div class="profile-avatar"><img src="/images/Homepage/profile/avatar.png" alt="Shucheng Wei" /></div>
         <h2>Shucheng Wei 🤗</h2>
         <p class="profile-school">Ocean University of China</p>
         
@@ -51,7 +47,7 @@ import Layout from "../components/Layout.astro";
           <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> QingDao, China</li>
           <li><a href="mailto:scwei8888@163.com"><i class="fa-solid fa-envelope" aria-hidden="true"></i> Email</a></li>
           <li><a href="https://github.com/apath1028" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> Github</a></li>
-          <li><a href="#"><i class="fa-brands fa-orcid" aria-hidden="true"></i> ORCID</a></li>
+          <!-- <li><a href="#"><i class="fa-brands fa-orcid" aria-hidden="true"></i> ORCID</a></li> -->
         </ul>
       </aside>
 
@@ -59,8 +55,7 @@ import Layout from "../components/Layout.astro";
       <article class="academic-content">
         <!-- 首页简介和 CV 下载入口。将 href 替换成 public 目录中的 PDF 路径。 -->
         <section id="about-me" class="intro-section">
-          <p>个人简介待补充。这里放当前身份、学校、研究方向和所在实验室等介绍。</p>
-          <p>本科或上一段教育经历介绍待补充。</p>
+          <p>I am currently an undergraduate student majoring in Telecommunication Engineering at <a class="institution-link" href="https://www.ouc.edu.cn/" target="_blank" rel="noopener noreferrer">Ocean University of China (OUC)</a>. I am supervised by <a class="institution-link" href="https://it.ouc.edu.cn/qss/list.htm" target="_blank" rel="noopener noreferrer">A/Prof. Shishi Qiao</a>. My research primarily focuses on Computer Vision, with specific interests in Image Retrieval and Artificial Intelligence.</p>
           <a class="cv-link" href="#">Download CV 📑</a>
         </section>
 
@@ -68,7 +63,6 @@ import Layout from "../components/Layout.astro";
         <section id="educations" class="academic-section">
           <h1>📖 Educations</h1>
           <ul>
-            <li><em>起止时间待补充</em>，学校、城市、专业与学位待补充。</li>
             <li><em>2024.08 - 2028.06 (expected)</em>, Ocean University of China, Qingdao, Telecommunication Engineering.</li>
           </ul>
         </section>
@@ -77,8 +71,8 @@ import Layout from "../components/Layout.astro";
         <section id="news" class="academic-section">
           <h1>🔥 News</h1>
           <ul>
-            <li><em>时间待补充</em>：新闻、研究进展或活动信息待补充。</li>
-            <li><em>时间待补充</em>：新闻、研究进展或活动信息待补充。</li>
+            <li><em>None</em>：none</li>
+            <!-- <li><em>时间待补充</em>：新闻、研究进展或活动信息待补充。</li> -->
           </ul>
         </section>
 
@@ -88,15 +82,15 @@ import Layout from "../components/Layout.astro";
           <h2>📃 Papers</h2>
           <div class="paper-box">
             <!-- 左侧论文图。可替换为 <img src="/images/publications/xxx.webp" alt="..." />。 -->
-            <div class="paper-image placeholder-image">论文图片待补充</div>
+            <div class="paper-image placeholder-image">None</div>
             <!-- 右侧论文题目、作者、状态、链接和摘要。 -->
             <div class="paper-text">
-              <h2>🛰️ 论文标题待补充</h2>
-              <p><strong>作者信息待补充。</strong></p>
-              <p>投稿期刊、会议、论文状态和链接待补充。</p>
+              <h2>🛰️ Paper title</h2>
+              <p><strong>Author information</strong></p>
+              <p>Journal/conference, paper status and links</p>
               <p><a href="#">🔗 Manuscript Preview</a></p>
               <hr />
-              <p>论文简介、主要贡献和实验结果待补充。</p>
+              <p>Abstract, main contributions and experimental results</p>
             </div>
           </div>
         </section>
@@ -104,20 +98,20 @@ import Layout from "../components/Layout.astro";
         <!-- 实习经历。图片和正文沿用 paper-box 的左图右文结构。 -->
         <section id="internships" class="academic-section">
           <h1>💻 Internships</h1>
-          <h2>实习单位与时间待补充</h2>
+          <h2>Internship institution and duration</h2>
           <div class="paper-box">
-            <div class="paper-image placeholder-image">实习图片待补充</div>
-            <div class="paper-text"><p>实习内容、工作职责和成果待补充。</p></div>
+            <div class="paper-image placeholder-image">None</div>
+            <div class="paper-text"><p>Internship content, responsibilities and achievements</p></div>
           </div>
         </section>
 
         <!-- 项目经历。新增项目时复制 h2 + paper-box 整块。 -->
         <section id="projects" class="academic-section">
           <h1>🔎 Projects</h1>
-          <h2>项目名称待补充</h2>
+          <h2>Project name</h2>
           <div class="paper-box">
-            <div class="paper-image placeholder-image">项目图片待补充</div>
-            <div class="paper-text"><p>项目背景、负责内容、技术栈和项目链接待补充。</p></div>
+            <div class="paper-image placeholder-image">None</div>
+            <div class="paper-text"><p>Project background, personal work, technical stack and links</p></div>
           </div>
         </section>
 
@@ -141,7 +135,7 @@ import Layout from "../components/Layout.astro";
         <!-- 社团、组织和学术服务经历。 -->
         <section id="societies" class="academic-section">
           <h1>💼 Societies</h1>
-          <ul><li><em>时间待补充</em>，社团、组织或学术服务经历待补充。</li></ul>
+          <ul><li><em>Time</em>，Club, organization and academic service experiences</li></ul>
         </section>
       </article>
     </main>
@@ -242,8 +236,9 @@ import Layout from "../components/Layout.astro";
   /* 圆形头像容器。真实图片建议设置 width/height: 100% 和 object-fit: cover。 */
   .profile-avatar {
     display: grid;
-    width: min(175px, 100%);
-    aspect-ratio: 1;
+    width: 175px;
+    height: 175px;
+    max-width: 100%;
     margin-bottom: 1rem;
     place-items: center;
     border: 1px solid #f2f3f3;
@@ -251,6 +246,22 @@ import Layout from "../components/Layout.astro";
     background: #fafafa;
     color: #b8bec3;
     font-size: 3rem;
+    overflow: hidden;
+  }
+  .profile-avatar img {
+    /* 缩放图片本身，容器尺寸和圆形边界保持不变。 */
+    --avatar-scale: 0.8;
+    /* 正值向下移动，负值向上移动。 */
+    --avatar-offset-y: -35px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 圆形裁剪由 .profile-avatar 统一负责，避免缩放后出现内层圆形。 */
+    border-radius: 0;
+    transform: translateY(var(--avatar-offset-y)) scale(var(--avatar-scale));
+    transform-origin: center;
+    object-position: center center;
   }
 
   /* 左栏姓名样式。 */
@@ -289,6 +300,15 @@ import Layout from "../components/Layout.astro";
   }
 
   .intro-section p { margin: 0 0 0.8rem; }
+
+  .academic-content a.institution-link {
+    color: #3d6596;
+    text-decoration: underline !important;
+    text-decoration-line: underline;
+    text-underline-offset: 2px;
+  }
+
+  .academic-content a.institution-link:hover { color: #244d7d; }
 
   /* CV 下载按钮；href 可指向 /files/resume.pdf 等 public 目录文件。 */
   .cv-link {
@@ -384,7 +404,7 @@ import Layout from "../components/Layout.astro";
     .academic-nav { justify-content: flex-start; }
     .academic-main { grid-template-columns: 1fr; }
     .profile-column { position: static; display: grid; grid-template-columns: 120px 1fr; gap: 0 1.25rem; }
-    .profile-avatar { grid-row: span 3; width: 120px; }
+    .profile-avatar { grid-row: span 3; width: 120px; height: 120px; }
     .profile-links { grid-column: 1 / -1; display: flex; gap: 1rem; flex-wrap: wrap; }
   }
 

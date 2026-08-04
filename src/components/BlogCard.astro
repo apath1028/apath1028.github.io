@@ -1,9 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getTagClass } from "../lib/tags";
+import { formatPassageDate, passageDateValue } from "../lib/passage-date";
 
 export interface Props {
-  post: CollectionEntry<"blog">;
+  post: CollectionEntry<"passages">;
 }
 
 const { post } = Astro.props;
@@ -12,7 +13,7 @@ const { title, description, date, category, tags, cover, coverAlt } = post.data;
 ---
 
 <article class="blog-card reveal reveal-delay-1">
-  <a href={`/blog/${slug}`} class="blog-card-link">
+  <a href={`/passages/${slug}`} class="blog-card-link">
     {cover && (
       <div class="blog-card-cover">
         <img src={cover} alt={coverAlt || title} loading="lazy" />
@@ -20,12 +21,8 @@ const { title, description, date, category, tags, cover, coverAlt } = post.data;
     )}
     <div class="blog-card-body">
       <div class="blog-card-meta">
-        <time datetime={date.toISOString()}>
-          {date.toLocaleDateString("zh-CN", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+        <time datetime={passageDateValue(date)}>
+          {formatPassageDate(date)}
         </time>
         {category && <span class="blog-card-category">{category}</span>}
       </div>
