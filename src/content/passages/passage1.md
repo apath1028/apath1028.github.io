@@ -20,7 +20,7 @@ tags: ["杂谈"]
 初中的第一次月考，是我考的最差的一次。考到了年级的一百多名，班级的十几名。其实当时也没觉得有啥，但后来是班级的语文课，进行小组分组，班级前十担任组长，感觉我还是有点争抢好胜的吧，后面也默默努力提升成绩了。仍记得第二次月考考了班级第七名，期中考考了班级第九名hhhh，但在年级上还是有点进步了。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩1.png" 
+<img src="/images/Blog/Passages/passage1/成绩1.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初一上成绩</p>
 </div>
@@ -32,7 +32,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 来到初一下，开学初其实没有很努力，到期中的时候成绩就掉的很厉害，期中过后便开始努力了，也感觉没什么好记录的。这学期期末也有清华北大苗子计划的公益班，我们班分配到了8个名额。我以为也是会用最后一次模拟考来作为选拔标准，但最后是用期中考试作为标准，我也是很幸运拿到了名额hhhhh。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩2.png" 
+<img src="/images/Blog/Passages/passage1/成绩2.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初一下成绩</p>
 </div>
@@ -40,7 +40,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 到了大二，似乎是被学生家长向教育局举报，我们年级得重新分班，去向尖子班，平均分配了。我被分到了4班，当时我分进去的成绩是班级第3名。大二上感觉平平无奇，期中考试我也是考了第3名，期末前的最后1次模拟考考了第2名，可能当时飘了，最终期末考却考了第4名hhhh。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩3.png" 
+<img src="/images/Blog/Passages/passage1/成绩3.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初二上成绩</p>
 </div>
@@ -50,7 +50,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 一开学就开学考，非常的痛苦。不过当时我年级排名没有变，班级排名却拿了第1名，当时也是很开心的。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩4.png" 
+<img src="/images/Blog/Passages/passage1/成绩4.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初二下成绩</p>
 </div>
@@ -64,7 +64,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 上初三以来，自从第一次月考拿了班级第一名，我也越发努力了，争取捍卫一下hhhhh，最后也成功了hhhhh。不过前期在年级上的排名都是十几名，班主任还找我谈话了，希望我能努努力冲一冲hhhhh。不过期中也没冲上去。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩5.png" 
+<img src="/images/Blog/Passages/passage1/成绩5.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初三上成绩</p>
 </div>
@@ -74,7 +74,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 到了初三下，离中考越来越近了，学习气氛越发紧张。我的体育一直以来都不太好，每次把体育成绩加上去，我的年级排名就会掉，因此我在初三下越来越努力练习体育了。仍记得我的体育成绩从初三上期末考的49，到了初三下第一次模拟考就考到了满分hhhhh，也是万万没想到哈，这个体育成绩在初三下开始的时候班主任也找我谈话了hhhh，感觉班主任找我谈话什么科目，什么科目就会提高hhhhh。真是非常感谢班主任老师的关心，很好的劳老师。可惜老师在我们毕业之后就被调到了另一个学校教书了。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/成绩6.png" 
+<img src="/images/Blog/Passages/passage1/成绩6.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">初三下成绩</p>
 </div>
@@ -90,12 +90,12 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 
 <div style="display:flex; justify-content:center; align-items:flex-end; gap:24px; flex-wrap:wrap;">
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高一上第一次月考.png" 
+    <img src="/images/Blog/Passages/passage1/高一上第一次月考.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高一上第一次月考</p>
   </div>
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高一上期中考.png" 
+    <img src="/images/Blog/Passages/passage1/高一上期中考.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高一上期中考</p>
   </div>
@@ -103,12 +103,12 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 
 <div style="display:flex; justify-content:center; align-items:flex-end; gap:24px; flex-wrap:wrap;">
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高一上12月联考.png" 
+    <img src="/images/Blog/Passages/passage1/高一上12月联考.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高一上12月联考</p>
   </div>
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高一上期末考.png" 
+    <img src="/images/Blog/Passages/passage1/高一上期末考.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高一上期末考</p>
   </div>
@@ -119,7 +119,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 开学考我考的很差，但当时物理出成了75分钟的卷子，但实际只做了60分钟，我当时做的一脸懵逼，寒假也没有学，自然考的很差了，最后出的成绩排名它没有分物理历史也没有赋分排，好像我考了一百几十名吧。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高一下开学考.png" 
+<img src="/images/Blog/Passages/passage1/高一下开学考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高一下开学考</p>
 </div>
@@ -133,7 +133,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 到了5月，五一只放了一天，收假回来之后就是期中考试（这种收假回来就考试真的很非人类啊，害得假期都不能好好玩），不过这次期中我超常发挥，数学考了145（这应该是我在正式考试中考的最高分的了，排了年级第一），综合考了年级19名，入选了清北之星，这是我在上高中以来最开心的时刻了。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高一下期中考语数英.png" 
+<img src="/images/Blog/Passages/passage1/高一下期中考语数英.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高一下期中考语数英<br>物理88、化学94、生物88</p>
 </div>
@@ -141,7 +141,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 6月中我跟老师说想要参加化学竞赛，结果老师就给我报名了。随后就到期末了………
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高一下期末考.png" 
+<img src="/images/Blog/Passages/passage1/高一下期末考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高一下期末考<br>化学92、生物93</p>
 </div>
@@ -151,7 +151,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 8月为了完成社会实践，我去了村委做了一些打扫卫生的活，………，8月底快开学的时候，我喜欢上了看国漫（太爽了），自然而然地开学考也寄了，好像考了将近八十名，还是七十二名。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二上开学考.png" 
+<img src="/images/Blog/Passages/passage1/高二上开学考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二上开学考<br>物理57、化学83、生物76</p>
 </div>
@@ -161,7 +161,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 当时真的很想追求高排名，为了国庆收假回来的月考，想着国庆我就不回家了先去姨娘家住，每天就去图书馆卷，结果发现国庆期间要做核酸才能进去，后来也回家了，我仍然没有好好学习。10月5日去的学校，因为当时10.6和10.7有一个自愿报名的物理讲座。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二上第一次月考.png" 
+<img src="/images/Blog/Passages/passage1/高二上第一次月考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二上第一次月考<br>物理83、化学82、生物80</p>
 </div>
@@ -169,7 +169,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 后来就到了期中考，这次是和省里的其它中学联考，但化学不联考，我考了96，是年级第一，这次期中的总排名好像是58。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二上期中考.png" 
+<img src="/images/Blog/Passages/passage1/高二上期中考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二上期中考</p>
 </div>
@@ -177,7 +177,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 后面来到了这学期的最后一次月考，考完就是校运会了，我找了个牙痛的借口请假回家了，那次月考成绩也出来了，考了好像是16名……
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二上第二次月考.png" 
+<img src="/images/Blog/Passages/passage1/高二上第二次月考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二上第二次月考<br>物理81、化学90、生物88</p>
 </div>
@@ -193,7 +193,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 很快迎来分班后的第一次月考，这次我考的巨差无比，拿了一等奖，似乎是一百零几名。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二下第一次月考.png" 
+<img src="/images/Blog/Passages/passage1/高二下第一次月考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二下第一次月考</p>
 </div>
@@ -203,7 +203,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 然后到了期中，我有点忘了……
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二下期中考.png" 
+<img src="/images/Blog/Passages/passage1/高二下期中考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二下期中考</p>
 </div>
@@ -213,7 +213,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 然后到了5月月考，是三新联考，那段时间我好像又阳了，说一句话要咳好几次，发烧发热，带病考试，最后也居然考了30名左右hhhhh，考完后就请假回家了。其实回学校后也没有完全好，还是说一句话要咳好几次，但没有发烧发热了。
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高二下第二次月考.png" 
+<img src="/images/Blog/Passages/passage1/高二下第二次月考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高二下第二次月考<br>物理91、化学**、生物77</p>
 </div>
@@ -223,7 +223,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 暑假，我也没有好好学习，还是每天追剧刷抖音，我们好像是7.31开学的，没有正式的开学考（庆幸），有个摸底考？
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高三上摸底考.png" 
+<img src="/images/Blog/Passages/passage1/高三上摸底考.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高三上摸底考</p>
 </div>
@@ -245,7 +245,7 @@ style="width:500px; max-width:100%; height:auto; display:block;">
 **南三柳高的一轮复习诊断：564 → 595，班6、校19。这次的语文考的很好，是班级第二，作文拿了56分，也是吓到我了hhhh
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/作文.jpg" 
+<img src="/images/Blog/Passages/passage1/作文.jpg" 
 style="width:800px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">第一次拿这么高的分数hhhhh</p>
 </div>
@@ -254,12 +254,12 @@ style="width:800px; max-width:100%; height:auto; display:block;">
 
 <div style="display:flex; justify-content:center; align-items:flex-end; gap:24px; flex-wrap:wrap;">
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考1.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考1.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考1(3.31-4.6)</p>
   </div>
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考2.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考2.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考2(4.7-4.13)</p>
   </div>
@@ -267,12 +267,12 @@ style="width:800px; max-width:100%; height:auto; display:block;">
 
 <div style="display:flex; justify-content:center; align-items:flex-end; gap:24px; flex-wrap:wrap;">
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考3.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考3.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考3(4.14-4.20)</p>
   </div>
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考4.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考4.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考4(4.21-4.27)</p>
   </div>
@@ -280,19 +280,19 @@ style="width:800px; max-width:100%; height:auto; display:block;">
 
 <div style="display:flex; justify-content:center; align-items:flex-end; gap:24px; flex-wrap:wrap;">
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考5.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考5.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考5(4.28-5.4)</p>
   </div>
   <div style="text-align:center; min-width:0;">
-    <img src="../../../public/images/Blog/Passages/passage1/高三下模拟考6.png" 
+    <img src="/images/Blog/Passages/passage1/高三下模拟考6.png" 
     style="width:300px; max-width:100%; height:auto; display:block;">
     <p style="font-size:14px;color:#555;margin:4px 0 12px 0;">高三下模拟考6(5.16-5.17)</p>
   </div>
 </div>
 
 <div align="center">
-<img src="../../../public/images/Blog/Passages/passage1/高三下模拟考7.png" 
+<img src="/images/Blog/Passages/passage1/高三下模拟考7.png" 
 style="width:500px; max-width:100%; height:auto; display:block;">
 <p style="font-size:14px; color:#555; margin:4px 0 12px 0;">高三下模拟考7(5.19-5.25)</p>
 </div>
