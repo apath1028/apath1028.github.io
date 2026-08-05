@@ -156,17 +156,17 @@ const skillRows = [
 
 <style>
   .about-page { display: flex; width: 100%; max-width: 1180px; flex-direction: column; gap: 1.35rem; }
-  .about-hero { position: relative; overflow: hidden; padding: 3rem 2rem; border: 1px solid rgba(167, 139, 250, .16); border-radius: 1.5rem; background: rgba(255,255,255,.03); box-shadow: 0 2px 20px -6px var(--accent-glow); }
+  .about-hero { position: relative; container-type: inline-size; overflow: hidden; padding: 3rem 2rem; border: 1px solid rgba(167, 139, 250, .16); border-radius: 1.5rem; background: rgba(255,255,255,.03); box-shadow: 0 2px 20px -6px var(--accent-glow); }
   .hero-orb { position: absolute; width: 260px; height: 260px; border-radius: 50%; filter: blur(65px); opacity: .34; pointer-events: none; }
   .hero-orb-one { top: -45%; left: -12%; background: var(--accent-glow); }
   .hero-orb-two { right: -8%; bottom: -45%; background: var(--teal-glow); }
   .hero-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
   .hero-avatar-row { display: flex; justify-content: center; align-items: center; gap: clamp(.85rem, 3vw, 1.45rem); width: 100%; }
-  .hero-avatar-placeholder { display: grid; width: 112px; height: 112px; place-items: center; border: 4px solid rgba(167,139,250,.28); border-radius: 50%; background: radial-gradient(circle at 35% 25%, #676c89, #36394f 70%); color: rgba(232,230,240,.75); font-size: 1.1rem; font-weight: 700; box-shadow: 0 0 35px var(--accent-glow); }
-  .float-cloud { display: flex !important; flex: none; flex-direction: column !important; gap: .62rem; font-size: .82rem; font-weight: 800; }
+  .hero-avatar-placeholder { display: grid; width: 112px; height: 112px; aspect-ratio: 1; flex: 0 0 112px; place-items: center; border: 4px solid rgba(167,139,250,.28); border-radius: 50%; background: radial-gradient(circle at 35% 25%, #676c89, #36394f 70%); color: rgba(232,230,240,.75); font-size: 1.1rem; font-weight: 700; box-shadow: 0 0 35px var(--accent-glow); }
+  .float-cloud { display: flex !important; min-width: 0; flex: none; flex-direction: column !important; gap: .62rem; font-size: .82rem; font-weight: 800; }
   .float-cloud-left { align-items: flex-end; }
   .float-cloud-right { align-items: flex-start; }
-  .float-text { display: inline-flex; align-items: center; width: fit-content; min-height: 1.75rem; padding: .08rem 1.05rem; border: 1px solid rgba(167,139,250,.28); border-radius: 999px; background: rgba(255,255,255,.035); color: var(--text-primary); white-space: nowrap; box-shadow: inset 0 1px rgba(255,255,255,.12); animation: float-up-down 4s ease-in-out infinite; will-change: transform; }
+  .float-text { display: inline-flex; align-items: center; width: fit-content; max-width: 100%; min-height: 1.75rem; padding: .08rem 1.05rem; border: 1px solid rgba(167,139,250,.28); border-radius: 999px; background: rgba(255,255,255,.035); color: var(--text-primary); white-space: nowrap; box-shadow: inset 0 1px rgba(255,255,255,.12); animation: float-up-down 4s ease-in-out infinite; will-change: transform; }
   .float-text-2, .float-text-3 { margin-inline-end: 1.25rem; }
   .float-text-6, .float-text-7 { margin-inline-start: 1.25rem; }
   .float-text-1, .float-text-5 { animation-delay: .5s; }
@@ -235,9 +235,18 @@ const skillRows = [
   .evaluation-list > div { padding: .78rem .85rem; }
   .evaluation-list span { display: inline-block; margin-bottom: .35rem; color: var(--accent); letter-spacing: .05em; font-size: .78rem; font-weight: 900; }
   .evaluation-list p { margin: 0; color: var(--text-secondary); font-size: .88rem; line-height: 1.65; }
+  @container (max-width: 650px) {
+    .hero-avatar-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "avatar avatar" "left right"; gap: 1rem .7rem; }
+    .hero-avatar-placeholder { grid-area: avatar; width: 96px; height: 96px; flex-basis: 96px; justify-self: center; font-size: 1rem; }
+    .float-cloud { width: 100%; gap: .5rem; }
+    .float-cloud-left { grid-area: left; align-items: stretch; }
+    .float-cloud-right { grid-area: right; align-items: stretch; }
+    .float-text { width: 100%; min-width: 0; min-height: 2rem; justify-content: center; padding: .2rem .45rem; overflow: hidden; font-size: .74rem; text-overflow: ellipsis; }
+    .float-text-2, .float-text-3, .float-text-6, .float-text-7 { margin-inline: 0; }
+  }
   @media (max-width: 1020px) { .about-card-profile, .about-card-personality, .about-card-skills, .about-card-contact, .about-card-projects, .about-card-evaluation { grid-column: 1 / -1; } .info-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 680px) { .about-hero { padding: 2.5rem 1rem; } .about-card-grid { gap: 1rem; } .social-grid, .project-list, .project-focus-grid { grid-template-columns: 1fr; } .info-list { grid-template-columns: 1fr; } .personality-body { grid-template-columns: 1fr; min-height: 0; } .personality-illustration { width: 8rem; height: 9rem; justify-self: center; font-size: 2.2rem; } }
-  @media (max-width: 620px) { .float-cloud { display: none; } }
+  @media (max-width: 680px) { .about-page.container { padding-inline: 0; } .about-hero { padding: 1.6rem .75rem 2rem; border-radius: 1.15rem; } .hero-content { gap: .85rem; } .greeting { font-size: .92rem; } .name-glow { font-size: 1.55rem; } .hero-motto { font-size: .86rem; } .about-card-grid { gap: 1rem; } .about-card { padding: 1rem; border-radius: .85rem; } .social-grid, .project-list, .project-focus-grid { grid-template-columns: 1fr; } .info-list { grid-template-columns: 1fr; } .personality-body { grid-template-columns: 1fr; min-height: 0; } .personality-illustration { width: 8rem; height: 9rem; justify-self: center; font-size: 2.2rem; } .skill-chip { width: 3.35rem; height: 3.35rem; flex-basis: 3.35rem; } .skill-chip i { font-size: 1.65rem; } }
+  @media (max-width: 390px) { .float-text { font-size: .68rem; } .hero-avatar-row { gap: .85rem .45rem; } }
 </style>
 
 

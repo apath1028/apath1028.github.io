@@ -21,7 +21,7 @@ import Layout from "../components/Layout.astro";
       <nav class="academic-nav" aria-label="Primary navigation">
         <!-- href 必须与下方 section 的 id 对应；Card 单独跳转到博客首页。 -->
         <a class="nav-home" href="#top">Homepage</a>
-        <a href="#top">About Me</a>
+        <a href="#about-me">About Me</a>
         <a href="#educations">Educations</a>
         <a href="#news">News</a>
         <a href="#publications">Publications</a>
@@ -145,6 +145,7 @@ import Layout from "../components/Layout.astro";
 <style>
   /* 页内锚点采用平滑滚动。 */
   :global(html) { scroll-behavior: smooth; }
+  :global(html:has(body.resume-theme)) { scroll-padding-top: 4.5rem; }
 
   /* 简历页基础视觉：白色背景、正文颜色、字体和全局行高。 */
   .academic-site {
@@ -213,6 +214,11 @@ import Layout from "../components/Layout.astro";
 
   .academic-nav a:hover::after { transform: scaleX(1); }
   .academic-nav .nav-home { font-weight: 700; }
+  .academic-nav a.is-active {
+    color: #2f3941;
+    font-weight: 700;
+  }
+  .academic-nav a.is-active::after { transform: scaleX(1); }
 
   /*
     简历主体两列网格：15.25% 为左栏，其余空间为正文。
@@ -419,6 +425,13 @@ import Layout from "../components/Layout.astro";
 
   /* 手机布局：个人资料居中，论文/项目图片和文字上下排列。 */
   @media (max-width: 600px) {
+    .academic-nav {
+      padding-inline: calc(50vw - 3.25rem);
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+    .academic-nav::-webkit-scrollbar { display: none; }
+    .academic-nav a { flex: 0 0 auto; }
     .academic-main { padding: 0 1rem 3rem; }
     .profile-column { display: block; text-align: center; }
     .profile-avatar { margin: 0 auto 1rem; }
@@ -429,3 +442,97 @@ import Layout from "../components/Layout.astro";
     .paper-text { margin-top: 1rem; }
   }
 </style>
+
+<script>
+  let cleanupResumeNav: (() => void) | undefined;
+
+  function initResumeNav() {
+    cleanupResumeNav?.();
+
+    const nav = document.querySelector<HTMLElement>(".academic-nav");
+    const masthead = document.querySelector<HTMLElement>(".masthead");
+    if (!nav || !masthead) return;
+
+    const mobile = window.matchMedia("(max-width: 600px)");
+    const items = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+      .map((link) => {
+        const id = decodeURIComponent(link.hash.slice(1));
+        return { link, target: document.getElementById(id) };
+      })
+      .filter((item): item is { link: HTMLAnchorElement; target: HTMLElement } => Boolean(item.target));
+
+    if (!items.length) return;
+
+    const controller = new AbortController();
+    let frame = 0;
+    let currentLink: HTMLAnchorElement | undefined;
+
+    const centerLink = (link: HTMLAnchorElement, smooth: boolean) => {
+      const left = link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2;
+      nav.scrollTo({
+        left: Math.max(0, left),
+        behavior: smooth && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "smooth"
+          : "auto",
+      });
+    };
+
+    const activate = (link: HTMLAnchorElement, smooth = true) => {
+      if (currentLink === link) return;
+      currentLink = link;
+
+      items.forEach(({ link: itemLink }) => {
+        const active = itemLink === link;
+        itemLink.classList.toggle("is-active", active);
+        if (active) itemLink.setAttribute("aria-current", "location");
+        else itemLink.removeAttribute("aria-current");
+      });
+
+      centerLink(link, smooth);
+    };
+
+    const update = (smooth = true) => {
+      frame = 0;
+      if (!mobile.matches) {
+        items.forEach(({ link }) => {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        });
+        currentLink = undefined;
+        return;
+      }
+
+      const marker = masthead.getBoundingClientRect().bottom
+        + Math.min(window.innerHeight * 0.18, 120);
+      let active = items[0];
+
+      for (const item of items) {
+        if (item.target.getBoundingClientRect().top <= marker) active = item;
+        else break;
+      }
+
+      activate(active.link, smooth);
+    };
+
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => update());
+    };
+
+    items.forEach(({ link }) => {
+      link.addEventListener("click", () => activate(link), { signal: controller.signal });
+    });
+    window.addEventListener("scroll", scheduleUpdate, { passive: true, signal: controller.signal });
+    window.addEventListener("resize", scheduleUpdate, { passive: true, signal: controller.signal });
+    mobile.addEventListener("change", scheduleUpdate, { signal: controller.signal });
+    update(false);
+
+    cleanupResumeNav = () => {
+      controller.abort();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }
+
+  initResumeNav();
+  document.addEventListener("astro:page-load", initResumeNav);
+</script>

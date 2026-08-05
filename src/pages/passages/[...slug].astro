@@ -396,7 +396,7 @@ const postHref = (entry: (typeof publishedPosts)[number]) =>
     closeButton.setAttribute("aria-label", "关闭图片预览");
     closeButton.textContent = "×";
     viewer.append(viewerImage, closeButton);
-    article.append(viewer);
+    document.body.append(viewer);
 
     function closeViewer() {
       viewer.classList.remove("is-open");
