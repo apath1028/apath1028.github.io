@@ -34,6 +34,16 @@ const socialImage = image
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#1a1b2e" />
+
+    {sidebar && (
+      <>
+        <link rel="preconnect" href="https://jsd.liiiu.cn" crossorigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://jsd.liiiu.cn/gh/willow-god/Sharding-fonts/Yozai-Medium/result.min.css"
+        />
+      </>
+    )}
     
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
