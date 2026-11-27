@@ -4,3 +4,7 @@ dist/
 .DS_Store
 *.local
 .astro/
+
+# Local theme review artifacts
+.preview-black/
+preview-black.html

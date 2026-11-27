@@ -1,0 +1,164 @@
+/* The blog uses the approved black palette; the resume keeps its light theme. */
+:root[data-theme="black"] {
+  color-scheme: dark;
+  --bg-base: #000000;
+  --bg-surface: #101010;
+  --bg-elevated: #1b1b1b;
+  --bg-glass: rgba(12, 12, 12, 0.96);
+  --border: #333333;
+  --border-soft: rgba(255, 255, 255, 0.10);
+  --text-primary: #f0f0f0;
+  --text-secondary: #b5b5b5;
+  --text-muted: #929292;
+  --accent: #e5e5e5;
+  --accent-hover: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.07);
+  --accent-glow: rgba(255, 255, 255, 0.035);
+  --warm: #c2c2c2;
+  --warm-soft: rgba(255, 255, 255, 0.05);
+  --warm-glow: transparent;
+  --rose: #b8b8b8;
+  --rose-soft: rgba(255, 255, 255, 0.05);
+  --rose-glow: transparent;
+  --teal: #c0c0c0;
+  --teal-soft: rgba(255, 255, 255, 0.05);
+  --teal-glow: transparent;
+  --sky: #c8c8c8;
+  --sky-soft: rgba(255, 255, 255, 0.05);
+  --sky-glow: transparent;
+  --code-bg: #0d0d0d;
+}
+
+:root[data-theme="black"] .bg-orbs,
+:root[data-theme="black"] .hero-orb {
+  display: none;
+}
+
+:root[data-theme="black"] .cursor-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 70%
+  );
+}
+
+:root[data-theme="black"] ::selection {
+  background: #e5e5e5;
+  color: #080808;
+}
+
+:root[data-theme="black"] body .garden-hero h1 {
+  background: none;
+  -webkit-text-fill-color: var(--text-primary);
+  color: var(--text-primary);
+  animation: none;
+}
+
+:root[data-theme="black"] .sidebar-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+:root[data-theme="black"] .sidebar-avatar,
+:root[data-theme="black"] .hero-avatar-placeholder {
+  background: radial-gradient(circle at 35% 30%, #383838, #1b1b1b 72%);
+  border: 1px solid #3b3b3b;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.025);
+  color: #c0c0c0;
+}
+
+:root[data-theme="black"] .sidebar-avatar-link:hover .sidebar-avatar {
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="black"] .avatar-badge {
+  background: #232323;
+}
+
+:root[data-theme="black"] .sidebar-card:hover {
+  border-color: #333;
+  box-shadow: none;
+}
+
+:root[data-theme="black"] .btn-primary {
+  background: #ededed;
+  color: #111;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="black"] .btn-primary:hover {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 5px 22px rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="black"] .blog-card::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025), transparent 55%);
+}
+
+:root[data-theme="black"] .blog-card:hover,
+:root[data-theme="black"] .timeline-card:hover,
+:root[data-theme="black"] .bt-timeline-card:hover,
+:root[data-theme="black"] .code-block:hover {
+  border-color: #444;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+}
+
+:root[data-theme="black"] .tag {
+  border-color: #303030;
+  background: #1b1b1b;
+  color: #bdbdbd;
+}
+
+:root[data-theme="black"] .tag-chip.active {
+  color: #111;
+  background: #e5e5e5;
+  box-shadow: none;
+}
+
+:root[data-theme="black"] .timeline-card.pinned {
+  border-color: #3a3a3a;
+  background: linear-gradient(135deg, #1b1b1b, #101010);
+}
+
+:root[data-theme="black"] .toc-card,
+:root[data-theme="black"] .toc-card:hover {
+  border-color: #333;
+}
+
+:root[data-theme="black"] .toc-item:hover {
+  border-left-color: #555;
+}
+
+:root[data-theme="black"] .toc-item.active {
+  border-left-color: var(--accent);
+}
+
+:root[data-theme="black"] .about-hero,
+:root[data-theme="black"] .about-card {
+  background: #101010;
+  border-color: #292929;
+  box-shadow: none;
+}
+
+:root[data-theme="black"] .float-text,
+:root[data-theme="black"] .skill-chip:hover,
+:root[data-theme="black"] .social-card:hover,
+:root[data-theme="black"] .project-item:hover {
+  border-color: #444;
+}
+
+:root[data-theme="black"] .name-glow {
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="black"] *,
+  :root[data-theme="black"] *::before,
+  :root[data-theme="black"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
